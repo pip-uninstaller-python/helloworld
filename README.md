@@ -13,3 +13,6 @@
 
 ### 扣扣群-喜欢用qq的可以加入
 <img width = "310" src="/qrcode_1562374550173.jpg" alt="python从入门到放弃 qq qun"/>
+
+## 微信公众号
+<img width = "310" src="/wechatgongzhonghao.jpg" alt="weixin公众号"/>
