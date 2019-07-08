@@ -1,5 +1,6 @@
 # helloworld
 [在这里上传日常练习代码，供其他成员参考，记得写好注释](https://github.com/pip-uninstaller-python/helloworld/tree/master/exercise)
+[git详细使用方法](https://github.com/pip-uninstaller-python/helloworld/blob/master/exercise/A%20pure%20code/Git%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C%EF%BC%88%E5%90%8C%E6%AD%A5%E6%BA%90%E7%A0%81github%EF%BC%89.pdf)
 
 ## 其他学习参考代码
 [戳这里](https://github.com/commitsession)
