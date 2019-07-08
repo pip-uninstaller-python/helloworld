@@ -1,5 +1,5 @@
 # helloword
-[上传日常练习代码，供其他成员参考，记得写好注释]
+[在这里上传日常练习代码，供其他成员参考，记得写好注释](https://github.com/pip-uninstaller-python/helloworld/tree/master/exercise)
 
 ## 其他学习参考代码
 [戳这里](https://github.com/commitsession)
@@ -10,5 +10,6 @@
 
 ### 管理员微信
 <img width = "310" src="/admin.jpg" alt="管理员微信号"/>
-### 扣扣群（喜欢用qq的可以加入）
+
+### 扣扣群-喜欢用qq的可以加入
 <img width = "310" src="/qrcode_1562374550173.jpg" alt="python从入门到放弃 qq qun"/>
