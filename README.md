@@ -1,4 +1,4 @@
-# helloword
+# helloworld
 [在这里上传日常练习代码，供其他成员参考，记得写好注释](https://github.com/pip-uninstaller-python/helloworld/tree/master/exercise)
 
 ## 其他学习参考代码
