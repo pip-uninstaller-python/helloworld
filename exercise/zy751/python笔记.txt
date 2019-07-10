@@ -1,0 +1,77 @@
+python爬虫
+requests
+俩种方式： get（静态的，输入网址可以直接打开）    post（打开后没有东西，找不到页面）
+get()参数有 url，params，headers     post（url，data，headers）
+参数一般都是字典格式，除了url
+
+ 常见的反爬机制：
+1，请求头 user agent
+2，cookie	登录成功后可获得
+3，ip
+4，验证码 一般都是登录的时候有验证码
+
+保存图片：获取图片的网址，再以二进制写入文件
+例子：
+url="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p712241453.webp"
+e=requests.get(url)
+with open('图片1.png','wb') as f:
+    f.write(e.content)
+
+数据的提取方式：
+常见的有： css，xpath，re
+注意：使用 xpath要先把获取的响应文本格式化一下
+	from lxml import etree
+	etree.HTML(response.text)
+
+一般的翻页都是用for循环实现    或提取出首页的网址，请求翻页网址
+例如 for i in range（0,500,25）：
+	url=（f'fasfa{i}.com’）
+	request.get(url)
+next_url=response.xpath(‘//a[text()="下一页"]/@href’）
+requests.get(next_url)
+
+session=requests.Session()#维持会话
+登录的时候故意输错 抓包看哪个preview里面信息和输入错误信息差不多
+查看data表单
+session.get(登录界面网址）
+查看源码 找到data表单内数据
+session.post(登录界面网址，data）
+
+
+requests.get(url,cookies=cookie)
+
+
+有的页面请求后数据格式为json 按照取字典内容 取值
+关键字为可以点开的小三角后面的值
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+time.localtime(时间戳)#解析出系统时间
+例子：
+ctime=time.localtime(int(int(da)//1000))#采集的为时间戳，切X1000了要还原 再解析
+otherStyleTime = time.strftime("%Y--%m--%d %H:%M:%S", ctime)
+
+
+python写入csv要list形式
