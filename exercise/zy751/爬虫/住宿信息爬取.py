@@ -29,7 +29,7 @@ def get_detail(url):
         'name':title,
         'address':address,
         'price':price,
-        '条件':tiaoj
+        'condition':tiaoj
     }
  #   print(data)
     save_csv(data)
@@ -47,9 +47,9 @@ if __name__=='__main__':
     kw=dict[type]
     #print(dict[type])
     a=int(input('请输入要爬取多少页数据：'))
-    with open('aa.csv','w',newline='')as f:
+    with open('aa.csv','a',newline='')as f:
         file=csv.writer(f)
-        list=['name','address','price','条件']
+        list=['name','address','price',kw]
         file.writerow(list)
     for i in range(1,a+1):
         url=f'http://hf.xiaozhu.com/{kw}-duanzufang-p{i}-2/'
