@@ -1,0 +1,35 @@
+创建项目
+django-admin stratproject name
+
+创建的name中 找 __init__ 输入 import pymysql
+				pymysql.install_as_MySQLdb()
+在 settings中修改DATABASES
+backends后改为mysql
+‘name’：后面为你创建的数据库名
+‘user’：用户名
+‘password’：数据库密码
+‘host’：数据库服务器ip 127.0.0.1或localhost
+‘port’：端口3306
+
+
+
+创建数据库
+进入到数据库内后 命令行都要加;
+以管理员身份运行cmd 输入 net start mysql80
+mysql -u root -p    打开mysql
+输入密码 zy415320
+show databases;    展示已有数据库
+use 数据库名     进入该数据库
+drop database 名字    删除该数据库
+create database 名字    创建数据库
+
+
+创建应用
+python manage.py stratapp 名字
+admin  配置站点
+model 模型
+view  视图
+
+激活应用 
+在settings中 将应用 加入到INSTALLED_APPS中
+

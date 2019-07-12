@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "D:/PycharmProjects/thinkinginpython/chapter1/debugging.py", line 6, in <module>
+    raise Exception('This is the error message')
+Exception: This is the error message
