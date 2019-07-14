@@ -1,5 +1,0 @@
-import io
-import sys
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8') #改变标准输出的默认编码
-解决
-UnicodeEncodeError: 'gbk' codec can't encode character '\u21b5' in position 26660: illegal multibyte sequence
