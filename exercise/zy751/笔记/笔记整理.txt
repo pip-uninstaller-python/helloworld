@@ -1,0 +1,166 @@
+HTTP协议（HyperText Transfer Protocol，超文本传输协议）：是一种发布和接收HTML页面的方法。
+HTTPS（Hypertext Transfer Protocol over Secure Socket Layer）简单讲是HTTP的安全版，在HTTP下加入SSL层。
+
+
+HTTP 的缺点：
+通信使用明文（不加密），内容可能会被窃听
+不验证通信方的身份，因此有可能遭遇伪装
+无法证明报文的完整性，所以有可能已遭篡改
+HTTPS的优点：
+为了解决 HTTP 协议的以上缺点，在上世纪90年代中期，由网景（NetScape）公司设计了 SSL 协议。SSL 是“Secure Sockets Layer”的缩写，中文叫做“安全套接层”。
+
+
+常用的请求报头
+Cookie  登录后获得
+Referer  防盗链
+User-Agent  请求头 首先就要加这个
+Cookie：客户端记录的信息，用于证明用户的身份。
+Session：服务器端记录的信息，用于验证用户的身份。
+
+
+import requests
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36'
+	‘cookie’：‘’
+}
+payload = {'key1': 'value1', 'key2': ['value2', 'value3']}
+r = requests.get('http://httpbin.org/get', params=payload，headers=headers)
+print(r.url)     #你请求的url
+r.status_code  响应状态码
+r.text      #网页的源码
+r.encoding = 'gb2312'#可以指定编码格式
+r.content  #网页源码的二进制 方便采集视频 图片等内容
+print(response.json())# 查看响应数据json格式 字典
+
+
+post差不多  
+request.get(url,data=data,headers=headers)
+通过 allow_redirects 参数禁用重定向处理：
+timeout 参数设定的秒数时间之后停止等待响应
+
+
+
+
+登录问题
+url_set_cookie = 'http://httpbin.org/cookies/set/sessioncookie/123456789'# 获屈Cookie的网址
+url_get_cookie = 'http://httpbin.org/cookies'
+session = requests.Session()# 发送请求设置Cookie
+response_set_cookie = session.get(url_set_cookie)# 发送请求得到Cookie
+response_get_cookie = session.get(url_get_cookie)# 打印获取的Cookie值
+print(response_get_cookie.text)
+要跳转不同的页面，需要维持相同的会话。
+当需要处理带有验证码的网站，也需要维持会话。
+登陆以后可以尝试访问其他页面测试是否成功登陆。
+如果可以获取Cookie就可以直接使用Cookie，可以不使用Session。
+这种方式的模拟登陆对简单网页来说还可以，但是登陆过程复杂的网站往往束手无策，后续我们会学习Selenium来实现登陆。
+
+
+证书问题
+verify=False
+
+ip问题
+ proxy = {
+            'http': 'xxxxxxxIP' ,# 如果你的请求是http 使用这个,
+            'https': 'xxxxxxxIP' # 如果你的请求是https 使用这个
+            }
+peoxies=proxy
+url = 'http://127.0.0.1:5050/get/'
+r = requests.get(url)
+# ip字典
+proxy = {
+    'http': f'{r.text}',
+    'https': f'{r.text}'
+}
+
+
+正则
+. 匹配出换行符以外的所有字符
+[]		匹配括号内的字符
+[^]		匹配非括号内字符
+[a-z]   	匹配a到z之间的字符 包括俩边
+\d    		数字
+\s		空白字符\t\r\n\f\v
+\w 		字母数字汉子
+大写的则相反
+*		0到任意多次
++		一到任意多次
+？		0或1
+{ }		指定次数
+|		满足任意一个即匹配
+（）
+re.search	0返回的是所有（）中的值 从1开始返回顺序值
+re.findall	0返回的是找到的第一个
+re.S  使.包括换行符
+re.l   对大小写不敏感
+
+在非scrapy环境中使用xpath 要导入 lxml中的etree
+xpath语法
+/ 	选取子节点
+//	选取子孙节点
+.	当前节点
+..	父节点
+[@attr]	拥有attr属性的节点
+@attr	选取attr属性
+text（）选中文本
+div[1]	选中第一个div节点
+
+json数据的提取
+
+跟字典一样操作即可
+
+json.loads 将json格式字符串转换为python对象
+json.dunmps 将python对象类型转换为json字符串
+
+
+selenium数据采集
+from selenium import webdriver
+driver=webdriver.Chrome()
+采集动态网页
+常见动态网页   Javascript jquery ajax
+
+采取措施  直接破解（难）
+	抓包分析（烦  运气）
+	用第三方库运行  selenium
+安装selenium 
+安装 浏览器驱动
+
+元素提取
+driver.find_element_by_xpath()	单个
+driver.find_elements_by_xpath()  多个 括号内写xpath语法  不能具体到属性 只能选中节点 
+driver.dind_element_by_id() 括号内为id值
+driver.find_element_by_link_text() 通关文本连接定位元素
+drive.find_element_by_partial_link_text() 通过文字链接中的一部分文字定位，属于模糊定位
+
+切框
+driver.switch_to.frame(值)  切换网页框  当html内嵌套html时使用 从0开始计数
+driver.click() 模拟点击
+driver.send_keys() 发送指定内容
+
+动作连
+from selenium.webdriver import ActionChains
+action=ActionChains（driver）实例化
+action.drag_and_drop(drag,drop)定义动作
+action.perform()  执行
+
+
+下拉框
+from selenium.webdriver.support.select import Select
+select=Select（element）
+select.select_by_index()
+select.select_by_value()
+select.select_by_visible_text()
+
+
+执行js代码
+
+js=‘   ’
+driver.execute_script(js)
+
+
+显式等待和隐式等待
+driver.implicitly_wait(10)   隐式等待 等待页面加载
+driver.get（url）
+
+
+
+

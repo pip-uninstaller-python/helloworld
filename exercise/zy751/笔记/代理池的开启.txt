@@ -1,0 +1,4 @@
+在cmd中切到proxy_pool-master/Run
+执行python main.py即可
+
+ip=requests.get（‘http：//127.0.0.1:5050/get/’）

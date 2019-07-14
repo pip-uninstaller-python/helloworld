@@ -1,0 +1,7 @@
+ctrl+f 在网页里找文本
+ctrl+/ 一键注释  pycharm
+shift+ tab 向前缩进
+ip地址的获取要先打开ip池 打开redis 再访问网址
+字典内容写入csv文件内
+a.setdefault(a,b)
+将字典a设置初始键值对

@@ -1,0 +1,3 @@
+netsh wlan set hostednetwork mode=allow ssid=名字 key=密码
+本地连接右键属性共享 选择2
+netsh wlan start hostednetwork

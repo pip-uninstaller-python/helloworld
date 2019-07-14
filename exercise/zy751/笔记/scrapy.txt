@@ -1,0 +1,141 @@
+scrapy处理
+选中一个目录	scrapy startproject name 创建一个项目
+		cd neme 切进去
+		scrapy genspider spidername allowurl 创建一个爬虫指定允许访问的地址
+		一般而言  加请求头，cookie，ip，维持会话在middleware中改写
+from fake_useragent import UserAgent
+class UseragentMiddleware(object):
+    def __init__(self):
+        self.ua=UserAgent()
+    def process_request(self, request, spider):
+        request.headers['User-Agent']=self.ua.random
+	request.headers['Cookie']=‘cookie值’       
+     #   ip=requests.get('http://127.0.0.1:5050/get')
+      #  request.meta['proxy'] = 'http://'+'ip'
+      #  request.meta['proxy'] = 'http://'+'ip'这是连接ip池
+	
+下载器中间件来改变请求时的请求头 cookie和ip问题
+```python
+class JSPageMiddleware(object):
+    def __init__(self):
+        self.browser = webdriver.Firefox()
+    @classmethod
+    def from_crawler(cls, crawler):
+        # This method is used by Scrapy to create your spiders.
+        s = cls() # 实例化
+        crawler.signals.connect(s.spider_closed, signal=signals.spider_closed)
+        return s
+    def process_request(self, request, spider):
+        if spider.name == "quotes":
+            self.browser.get(request.url)
+            # time.sleep(3)
+            print("访问:{0}".format(request.url))
+            #直接返回给spider，而非再传给downloader
+            return HtmlResponse(url=self.browser.current_url,
+                                body=self.browser.page_source,
+                                encoding="utf-8",
+                                request=request)
+
+    # 信号激活
+    def spider_closed(self, spider):
+        #当爬虫退出的时候关闭chrome
+        self.browser.quit()
+这是实现scrapy与selenium对接问题
+
+
+Item问题（item不需要激活，在用到的时候导入 实例化一下）
+class aaitem（scrapy.Item）
+	text=scrapy.Field()
+	author=scrapy.Filed()
+使用时导入包 实例化一下就行
+from items import aaitem
+
+
+
+保存到csv中
+class csvpipeline（object）:
+	def open_spider(self,spider):
+		self.file=open('aa,json','w')
+	def process_item(self,item,spider):
+		line=json.dumps(item,ensure_ascc=False)+'\n'
+		self.file.write(line)
+		return item
+	def close_spider(self,spider)
+		self.file.close()
+
+保存到Redis
+class redispipeline（object）:
+   def __init__(self):
+      self.redis=redis.StrictRedis('localhost','port','fb','user','password','db')
+    def process_item(self,item,spider):
+      self.redis.lpush('tenc',item)
+      return item   
+   def close_spider(self,spider):
+      self.redis.close() 
+
+保存到mysql
+class mysqlpipeline（object）：
+  def __init__(self):
+     self.connect=pymysql.connet(host,port,db,user,password,charset,use_unicode)
+     self.cursor=self.connnect.cursor()
+  def process_item(self,item,spider):
+     sql=‘insert into tablename('a’,'b','c') values(%s,%s,%s)',(item[a],item[b],item[c]
+     self.cursor.execute(sql)
+     self.connect.commit()
+     return item
+  def close_spider(self,spider)
+     self.cursor.close()
+     self.connect.close()
+
+
+from scrapy.pipelines.images import ImagesPipeline
+class imagePipeline(ImagesPipeline):
+    def get_media_requests(self, item, info):
+        #取出图片地址
+        image_url=item['image']
+        #发出请求
+        yield  scrapy.Request(image_url)
+专门处理获得的图片地址，下载图片
+然后在setting中设置IMAGES_STORE=‘filepath’  会在当前目录下创建一个full文件夹保存下载的图片
+
+
+from fake_useragent import UserAgent
+class UseragentMiddleware(object):
+    def __init__(self):
+        self.ua=UserAgent()
+    def process_request(self, request, spider):
+        request.headers['User-Agent']=self.ua.random
+	request.headers['Cookie']=‘cookie值’       
+     #   ip=requests.get('http://127.0.0.1:5050/get')
+      #  request.meta['proxy'] = 'http://'+'ip'
+      #  request.meta['proxy'] = 'http://'+'ip'这是连接ip池
+	
+下载器中间件来改变请求时的请求头 cookie和ip问题
+
+更改上面完成后要记得在setting中开启
+
+注意后面的值
+一般爬取先将robot改为False
+
+
+在自己创建的爬虫内写提取所要内容的方法
+可用xpath，re 不需导入lxml的etree
+parse 不可更改
+如需进入详情页提取还可继续yield scrapy.Request（url，callback，meta）
+url	为要进入的网址
+callback	为你进入网址后编写提取方法的函数，实现翻页提取，callback就是自身
+meta	可以进行数据的传递  meta={‘item’:item,'id'=id}就是你希望在callback中用到的本函数数据
+
+
+
+编写完毕后
+俩种方式运行爬虫
+一种是在cmd中切到爬虫文件夹位置  scrapy crawl 爬虫名（-o 文件名.文件格式）
+另一种实在与爬虫同一文件夹下的__init__中from scrapy import cmdline
+	cmdline.execute('scrapy crawl 爬虫名（-o 文件名.文件格式）'.split())
+
+
+
+
+
+
