@@ -1,8 +1,0 @@
-C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\;C:\Users\Administrator\AppData\Local\Programs\Python\Python37\;
-
-
-C:\Users\Administrator\AppData\Local\Programs\Python\Python37-32\Scripts\;C:\Users\Administrator\AppData\Local\Programs\Python\Python37-32\;%PyCharm Community Edition%
-
-\C:\Program Files\JetBrains\PyCharm Community Edition 2018.3.5\bin
-
- %CMDER_HOME%;C:\Users\Administrator\AppData\Local\Programs\Python\Python37
