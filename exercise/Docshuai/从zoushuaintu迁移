@@ -1,0 +1,17 @@
+实验中遇到了实际问题，需要通过python检索excel sheet1中A列的某值，比如12.30，并检索对应的B列的值,这里12.
+30在B列对应的值为0.587，在网上查了许多资料。没有针对此类问题的特定解决方案。分享给大家，也希望大家有更好的方法可以给我留言。
+import xlrd
+name = r"C:\Users\ZOU SHUAI\Desktop\openexcel\heat transfer conductivity.xlsx"
+import xdrlib ,sys
+import xlrd
+data = xlrd.open_workbook(name)
+table = data.sheet_by_name(u'Sheet1')
+nrows = table.nrows
+ncols = table.ncols
+list_data = []
+count1= 0
+for i in range(nrows):
+line_data = table.row_values(i)
+list_data.append(line_data)
+d=dict(list_data)
+print (d.get(12.3))
