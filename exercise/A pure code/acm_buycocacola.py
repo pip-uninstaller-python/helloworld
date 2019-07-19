@@ -23,10 +23,11 @@ print(num)
 def buy(p, q):
     num = input("输入购买数量：")
     n = int(num)
-    if n % p == 0:
-        return n + n / p * q
-    else:
-        return n + (n - 1) / p * q
+    return n + int(n / p) * q
+    # if n % p == 0:
+    #     return n + n / p * q
+    # else:
+    #     return n + (n - 1) / p * q
 
 
 num = buy(4, 1)
