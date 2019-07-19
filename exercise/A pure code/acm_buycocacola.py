@@ -7,11 +7,10 @@ def buy():
     num = input("输入购买数量：")
     n = int(num)
     if (n % 2 == 0):
-        count = n / 2
+        return int(num)*2
     else:
         n = n - 1
-        count = n / 2
-    return count + int(num)
+    return n*2+1
 
 
 num = buy()
