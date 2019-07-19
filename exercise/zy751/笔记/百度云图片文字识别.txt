@@ -1,0 +1,15 @@
+首先我们点击链接(https://cloud.baidu.com)，然后用自己百度帐号登录然后点击右上角的管理控制台按钮进去，拉到下面选择文字识别点进去。找到创建应用这个按钮，点击后给应用取个名称，建议用字母数字的组合，写个应用描述其他的默认，然后立即创建即可。
+下载sdk 
+在cmd中输入 pip install baidu-aip
+from aip import AipOcr
+
+以下三个在你自己创建的应用里找
+APP_ID=
+API_KEY=
+SECRET_KEY=
+client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+message=client.basicGeneralUrl(url)#网址
+message = client.basicGeneral(img)#图片
+for i in message.get('words_result'):提取文本信息
+    print(i.get('words'))
+
