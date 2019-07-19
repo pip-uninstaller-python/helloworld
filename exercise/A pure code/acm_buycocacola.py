@@ -10,7 +10,7 @@ def buy():
         return int(num)*2
     else:
         n = n - 1
-    return n*2+1
+        return n*2+1
 
 
 num = buy()
