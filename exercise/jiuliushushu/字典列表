@@ -1,0 +1,36 @@
+#列表切片，左右空，取列表，左取右不取
+list2 = [5,6,7,8,9]
+print(list2[:])
+print(list2[2:])
+print(list2[:2])
+print(list2[1:3])
+print(list2[2:4])
+
+#学生列表
+students = ['小明','小红','小刚']
+print(students[:2])
+
+#输出小明小红
+students = ['小明','小红','小刚']
+print(students[2])
+print(students[2:])
+
+#添加列表元素小美
+studens = ['小明','小红','小刚']
+studens.append('小美')
+print(studens)
+#删除列表元素小红
+students = ['小明','小红','小刚','小美']
+del students[1]
+print(students)
+
+#列表，字典
+students = ['小明','小红','小刚']
+scores = {'小明':95,'小红':90,'小刚':90}
+print(len(students))
+print(len(scores))
+
+#输出小明小红成绩
+scores = {'小明': 95, '小红': 90, '小刚': 90}
+print(scores['小明'])
+print(scores['小红'])
