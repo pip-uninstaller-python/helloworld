@@ -1,0 +1,7 @@
+import random
+word = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+for i in range(0,7):
+    a = random.randint(0, 36)
+    f = word[a]
+    print(f,end='')
