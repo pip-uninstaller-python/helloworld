@@ -15,14 +15,24 @@ def GetSoup(url):
     #转换为Soup
     return Soup
 
-def GetBookLink():
+def GetOriginalUrl():
 #此函数用于根据使用者输入，生成网站索引后界面的Url
 #根据观察，索引后网址为xxxxxxxxxxxxxxx + 小说名（浏览器上实际显示是小说名转换来的特殊字符）
-    BookName = input('请输入要下载的小说名：')
-    #将小说名存储在变量BookName中
-    OriginalUrl = ‘https://www.xbiquge6.com/search.php?keyword=’ + BookName
-    #拼接网址和BookName，产生实际的网址
-    return OriginalUrl
+    while True:
+        BookName = input('请输入要下载的小说名：')
+        #将小说名存储在变量BookName中
+        OriginalUrl = ‘https://www.xbiquge6.com/search.php?keyword=’ + BookName
+        #拼接网址和BookName，产生实际的网址
+        Soup = GetSoup(OriginalUrl)
+        Books = Soup.find('div',class_='result-list').findAll('result-item result-game-item')
+        for Book in Books:
+            BookName1 = Book.find('div',class_='result-game-item-detail').find('h3').find('a').get('title')
+            BookLink1 = Book.find('div',class_='result-game-item-detail').find('h3').find('a').get('href')
+            if BookName == BookName1:
+                return BookLink1
+        else:
+            print('未发现此书')
+            break
 
 未完待续。。。。。。。
     
