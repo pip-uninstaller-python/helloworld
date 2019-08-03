@@ -1,0 +1,14 @@
+List_Ex = [10,54,98,526,42,1,87,2,63,47]
+i = len(List_Ex)
+while i>1:
+    for j in range(i-1):
+    #由于下面会出现j+1的状况，最后一个数字有进行比较，所以此处未1 - i-1, 以避免list index outof range
+        if List_Ex[j]>List_Ex[j+1]:
+            List_Ex[j],List_Ex[j+1] = List_Ex[j+1],List_Ex[j]
+    i = i-1
+    #内层循环每运行一次，就确定了一次最大数字，只要将列表的剩下的元素再进行比较就行了。
+print(List_Ex)
+
+
+List_Ex.reverse()
+#此命令可以将列表元素倒序

@@ -1,0 +1,38 @@
+import requests
+from bs4 import BeautifulSoup
+
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
+#请求头，用于requests中模拟浏览器操作，看需要可以加上Cookie和Referer等
+
+def GetSoup(url):
+#程序中多处用到BeautifulSoup，定义此函数减少代码量
+#如有网址涉及到在请求头中加上Referer，在使用这个函数之前要对请求头进行初始化操作。
+    Resp = requests.get(url,headers=headers)
+    #获取网址页面
+    Resp.encoding = Resp.apparent_encoding
+    #某些情况下，网页的编码方式不是utf-8，此处统一编码方式？
+    Soup = BeautifulSoup(Resp.text,'html.parser')
+    #转换为Soup
+    return Soup
+
+def GetOriginalUrl():
+#此函数用于根据使用者输入，生成网站索引后界面的Url
+#根据观察，索引后网址为xxxxxxxxxxxxxxx + 小说名（浏览器上实际显示是小说名转换来的特殊字符）
+    while True:
+        BookName = input('请输入要下载的小说名：')
+        #将小说名存储在变量BookName中
+        OriginalUrl = ‘https://www.xbiquge6.com/search.php?keyword=’ + BookName
+        #拼接网址和BookName，产生实际的网址
+        Soup = GetSoup(OriginalUrl)
+        Books = Soup.find('div',class_='result-list').findAll('result-item result-game-item')
+        for Book in Books:
+            BookName1 = Book.find('div',class_='result-game-item-detail').find('h3').find('a').get('title')
+            BookLink1 = Book.find('div',class_='result-game-item-detail').find('h3').find('a').get('href')
+            if BookName == BookName1:
+                return BookLink1
+        else:
+            print('未发现此书')
+            break
+
+未完待续。。。。。。。
+    
