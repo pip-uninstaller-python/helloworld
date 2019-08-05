@@ -1,0 +1,35 @@
+def replacesymbol(txt):
+    count1 = 0
+    symbol = '!@#$%^&*()_+\\;:\'\"“”‘’/?><,.=-*|`~'
+    for i in txt:
+        if i in symbol:
+            txt.replace(i,' ',1)
+            count1 += 1
+    return txt,count1
+
+def wordsnum(txt):
+    count2 = 0
+    txt = txt.split(" ")
+    count2 = len(txt)
+    return count2
+
+def countdigit(txt):
+    count3 = 0
+    digit = '0123456789'
+    for i in digit:
+        count3 += txt.count(i)
+    return count3
+
+def countblank(txt):
+    count0 = txt.count(' ')
+    return count0
+
+def main():
+    txt = input("请输入一串字符：")
+    count0 = countblank(txt)
+    txt,count1 = replacesymbol(txt)
+    count2 = wordsnum(txt)
+    count3 = countdigit(txt)
+    print("字符中包含的符号数为{},英文单词数为{},数字个数为{},空格数为{}".format(count1,count2,count3,count0))
+
+main()
