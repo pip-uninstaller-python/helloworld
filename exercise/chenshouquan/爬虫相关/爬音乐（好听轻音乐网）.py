@@ -59,8 +59,9 @@ while True:
 
 		print("正在下载第",i+1,"首")
 
-		with open("D:\\music\\{}.mp3".format(songname),"wb") as f:#写进D盘music文件夹 format代表当前村的是songname
-			f.write(data)		
+		with open("C:\\Users\\11466\\Music\\{}.mp3".format(songname),"wb") as f:#写进D盘music文件夹 format代表当前村的是songname
+			#C:\Users\11466\Music
+			f.write(data)
 
 
 		time.sleep(0.5)
