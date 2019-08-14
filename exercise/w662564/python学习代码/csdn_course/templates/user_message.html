@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block article %}
+    <section class="main_section">
+        <hr>
+        <section id="user_manage">
+            <nav>
+                <p><a href="{% url 'user_index' %}">个人资料</a></p>
+                <p><a href="{% url 'user_course' %}">我的课程</a></p>
+                <p><a href="{% url 'user_Shoppingcart' %}">购物车</a></p>
+            </nav>
+            <section class="user_info">
+                <div class="user_info_wrapper">
+                    <h1>{{ message }}</h1>
+                </div>
+            </section>
+        </section>
+    </section>
+{% endblock %} }}

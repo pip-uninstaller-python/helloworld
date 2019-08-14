@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block article %}
+    <section class="video_section">
+        <h2>{{ course.courseName }}</h2>
+        <section class="main_section">
+            <video width="100%" controls>
+                <source src="{% url 'course_videoStream' course.id %}" type="video/mp4">
+            </video>
+        </section>
+    </section>
+{% endblock %}
