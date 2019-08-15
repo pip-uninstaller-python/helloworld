@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script type="text/javascript" src="/static/js/main.js"></script>
+
+</head>
+<body>
+<!-- 注册 -->
+<div id="register"
+     {% if not register_message %}
+     hidden="hidden"
+     {% endif %}
+>
+    <h2 class="form_p">注册</h2>
+    <p id="register_message">
+        {{ register_message }}
+        <!--信息有误-->
+    </p>
+    <form action="{% url 'user_register' %}" method="post" id="register_form">
+        {% csrf_token %}
+        <input id="register_account" type="text" name="account" placeholder="账号(数字、英文、下换线，8-16位)"><br/>
+        <input id="register_password" type="password" name="password" placeholder="密码(数字、英文、下换线，6-16位)"><br/>
+        <!--<input type="password" name="repassword" placeholder="确认密码"><br/>-->
+        <input id="register_submit" type="submit" value="注册">
+    </form>
+</div>
+
+<!-- 登录 -->
+<div id="login"
+     {% if not login_message %}
+     hidden="hidden"
+     {% endif %}
+>
+    <h2 class="form_p">登录</h2>
+    <p id="login_message">
+        {{ login_message }}
+        <!--信息有误-->
+    </p>
+    <form action="{% url 'user_login' %}" method="post" id="login_form">
+        {% csrf_token %}
+        <input id="login_account" type="text" name="account" placeholder="账号"><br>
+        <input id="login_password" type="password" name="password" placeholder="密码"><br>
+        <input id="login_submit" type="submit" value="登录">
+    </form>
+</div>
+
+<header>
+    {% block header %}
+{#          这里更改了就能把这个转跳到首页了#}
+        <span class="title"> <a href="{% url 'course_index' %}">錵滊嫣缘微课商城</a> </span>
+        <span>
+        <form action="#" class="search_form">
+            <input type="text" name="course" placeholder="按课程名称搜索">
+            <input type="submit" value="搜索">
+        </form>
+    </span>
+        <span class="user">
+        {% if not session_user %}
+        <a href="javascript:show('login')">登录</a>/
+        <a href="javascript:show('register')">注册</a>
+        {% else %}
+            <!-- 已经登录显示的内容 -->
+        你好：
+        <a href="{% url 'user_index' %}">{{ session_user.account }}</a>
+        <a href="{% url 'user_logout' %}">注销</a>
+        {% endif %}
+    </span>
+    {% endblock %}
+</header>
+
+<article>
+    {% block article %}
+    {% endblock %}
+</article>
+
+<footer>
+    {% block footer %}
+        <div id="footer_div1">
+            <p><a href="#">关于我们</a>| <a href="#">招聘</a>| <a href="#">广告服务</a>| <a href="#">网站地图</a></p>
+            <p><a href="#">QQ客服</a>| <a href="#">kefu@.ent</a>| <a href="#">客服论坛</a>| <a href="#">400-***-****</a>|
+                <a
+                        href="#">工作时间：8:30-22:00</a></p>
+            <p> 百度提供站内搜索 北ICP备19004658 </p>
+            <p> ©1999-2019 北京创新乐知网络技术有限公司 </p>
+            <p> 版权申诉 家长监护 经营性网站备案信息 网络110报警服务 中国互联网举报中心 北京互联网违法和不良信息举报中心 </p>
+        </div>
+        <div id="footer_div2">
+            <figure><img src="/static/img/csdn_static/10.jpg">
+                <figcaption>xx咨询</figcaption>
+            </figure>
+            <figure><img src="/static/img/csdn_static/11.jpg">
+                <figcaption>xx学院</figcaption>
+            </figure>
+            <figure><img src="/static/img/csdn_static/12.jpg">
+                <figcaption>xx企业招聘</figcaption>
+            </figure>
+        </div>
+    {% endblock %}
+</footer>
+
+</body>
+</html>

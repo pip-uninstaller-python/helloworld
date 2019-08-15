@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    錵滊嫣缘的微课商城
+
+{% endblock %}
+{% block article %}
+    <section class="nav_section"><img src="../static/img/csdn_static/11.jpg" alt="" width="100%"></section>
+    {% for course_data in course_data_s %}
+    <section class="main_section">
+        <h1>{{ course_data.category }}</h1>
+        {% for course in course_data.course_s %}
+        <figure>
+            <a href="{% url 'course_course'  course.id%}">
+                <img src="/{{ course.imgname }}">
+                <figcaption><span class="course_name">{{ course.courseName }}</span><span class="price">￥{{ course.price }}</span></figcaption>
+            </a>
+        </figure>
+        {% endfor %}
+    </section>
+    {% endfor %}
+
+{% endblock %}
