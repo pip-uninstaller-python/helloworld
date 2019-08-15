@@ -20,7 +20,7 @@ print(b)
 # class 类名（[父类]）：
 # 代码块
 # <class '__main__.MyClass'>
-class MyClass(self):  # 自定义类
+class MyClass:  # 自定义类
     pass
 
 
