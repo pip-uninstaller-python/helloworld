@@ -12,10 +12,14 @@ V03  20190821
 ---将函数主体整合成一个main函数
 ---优化函数，将函数功能独立开，将相关变量挪到定义的函数外部获取
 ---使下载小说函数独立，只要给定link即可下载小说，方便后续调试
+V04  20190823
+---将获取章节链接独立出来
+---利用多线程threading，加快程序运行速度
+---增加时间部分，用于统计程序运行时间
 '''
 ####################################################################################################################
 from bs4 import BeautifulSoup
-import requests
+import requests，time，threading
 
 def GetSoup(url):
     # 因程序中多出用到BeautifulSoup，为避免重复使用，此处直接定义函数获取Soup
@@ -27,7 +31,7 @@ def GetSoup(url):
     Soup = BeautifulSoup(Resp.text, "lxml")
     return Soup
 
-def GetBookInfo():
+def GetBookLink():
     # 让用户输入小说名称，以一定格式返回搜索结果
     # 让用户根据显示的搜索结果选择小说对应的编号，然后函数反馈用户选择小说的地址
     SearchName = input('请输入搜索关键词：')
@@ -61,29 +65,44 @@ def GetContent(url):
     Content = ChapterName + '\n' + Content
     # 将取到的章节名和正文结合作为一章
     return Content
+def GetChapterLinks(url):
+    # 获取小说的章节链接
+    ChapterLinks = []
+    Soup = GetSoup(url)
+    BookName = Soup.find('div', id='info').find('h1').text
+    DDs = Soup.find('div', id='list').find('dl').findAll('dd')
+    for DD in DDs:
+        ChapterLinks.append('https://www.xbiquge6.com' + DD.find('a').get('href'))
+    return ChapterLinks, BookName
 
-def downLoad(url):
-    def GetChapterLinks(url):
-        # 获取小说的章节链接
-        ChapterLinks = []
-        Soup = GetSoup(url)
-        BookName = Soup.find('div', id='info').find('h1').text
-        DDs = Soup.find('div', id='list').find('dl').findAll('dd')
-        for DD in DDs:
-            ChapterLinks.append('https://www.xbiquge6.com' + DD.find('a').get('href'))
-        return ChapterLinks, BookName
-    def main(ChapterLinks, BookName):
-        with open(BookName + '.txt', 'a', encoding='utf-8')as T:
-            # 以小说名保存小说内容，编码方式此处默认为GBK，修改为utf-8
-            print('正在下载{}。。。'.format(BookName))
-            for ChapterLink in ChapterLinks:
-                # 按章节保存小说
-                T.write(GetContent(ChapterLink))
-                T.write('\n\n')
-                # 在两个章节直接预留换行，更加美观。
-            print('下载完成！')
-    ChapterLinks, BookName = GetChapterLinks(url)
-    main(ChapterLinks, BookName)
+def DownLoad(i,j,k):
+    print('第{}部分下载中...'.format(k))
+    golbal Contents
+    Contents[k]=''
+    for Link in ChapterLinks[i,j]:
+        Contents[k] = Contents[k] + GetContent(Link) 
+    print('第{}部分下载完成'.format(k))
+T1 = time.time()
+BookLink = GetBookLink()
+ChapterLinks, BookName = GetChapterLinks(BookLink)
+Contents = []
+B = len(ChapterLinks)
+A = int(B/15)
+Pool = []
+for j in range(15):
+    Contents.append('')
+    if j != 14:
+        T = threading.Thread(target=DownLoad,args=(A*i,A*(i+1),j))
+    else:
+        T = threading.Thread(target=DownLoad,args=(A*i,B,j))
+    Pool.append(T)
+    T.start()
+for T in Pool():
+    T.join()
+with open(BookName+'.txt','a',encoding='utf-8')as T:
+    for Content in Contents:
+        T.write(Content)
+print('{}下载完成'.format(BookName))
+T2 = time.time()
+print('下载{}用时{}'.format(BookName,T2-T1))
 
-BookUrl = GetBookInfo()
-downLoad(BookUrl)
