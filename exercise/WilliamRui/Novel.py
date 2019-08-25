@@ -17,6 +17,9 @@ V04  20190823
 ---导入多线程下载，可加快约6倍左右的下载速度
 ---加入时间模块，用于记录程序运行时间
 ---新增输出信息，包含最新章节名称、下载结束提示及下载用时信息
+V05  20190825
+---修复因根据索引词无法找到小说而导致在选择小说界面无限死循环的BUG
+---将小说part更改为从part1开始
 '''
 ####################################################################################################################
 import requests
@@ -25,7 +28,8 @@ import time
 import threading
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36"}
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/76.0.3809.100 Safari/537.36"}
 
 
 # This part get the Soup of the response of a link
@@ -36,7 +40,7 @@ def getSoup(url):
     return soup
 
 
-# This part get the content of a link, which is what we need.
+# This part get the content of a chapter, which is what we need.
 def getContent(url):
     Soup = getSoup(url)
     ChapterName = Soup.find('div', class_='bookname').find('h1').text
@@ -61,13 +65,13 @@ def getChapterLink(url):
 
 # This part download the contents of the chapters we set(base on the region we give)
 def partDownLoad(ChapterLinks, i, j, k):
-    print('正在下载Part{}...\n'.format(k))
+    print('正在下载Part{}...\n'.format(k+1))
     global Contents
     ChapterContent = ''
     for ChapterLink in ChapterLinks[i:j]:
-        ChapterContent = ChapterContent + getContent(ChapterLink)
+        ChapterContent = ChapterContent + "\n" + getContent(ChapterLink)
     Contents[k] = ChapterContent
-    print('Part{}下载完成\n'.format(k))
+    print('Part{}下载完成\n'.format(k+1))
 
 
 # This part get the url of the book user needs.
@@ -75,26 +79,30 @@ def getBookLink():
     # 让用户输入小说名称，以一定格式返回搜索结果
     # 让用户根据显示的搜索结果选择小说对应的编号，然后函数反馈用户选择小说的地址
     SearchName = input('请输入搜索关键词：')
-    SearchUrl = 'https://www.xbiquge6.com/search.php?keyword=' + SearchName
-    # 拼凑出搜索结果的地址
-    Soup = getSoup(SearchUrl)
-    Books = Soup.findAll('div', class_='result-item result-game-item')
-    print('{1:{0}<3}\t{2:{0}<8}\t{3:{0}<8}\t{4}'.format(chr(12288), '序号', '书名', '作者', '链接'))
-    i = 1
-    for Book in Books:
-        BookName = Book.find('a', cpos='title').get('title')
-        BookLink = Book.find('a', cpos='title').get('href')
-        Author = Book.find('p', class_='result-game-item-info-tag').findAll('span')[1].get_text().strip()
-        print('{1:{0}<3}\t{2:{0}<8}\t{3:{0}<8}\t{4}'.format(chr(12288), i, BookName, str(Author), BookLink))
-        i = i + 1
-    BookID = int(input('请输入目标小说ID：'))
     while True:
-        # 防止用户输入的书编号不正确，此处使用死循环加条件语句
-        if BookID > 0 and BookID < len(Books) + 1:
-            # 防止用户输入的小说编号不符合要求
-            return Books[BookID - 1].find('a',cpos='title').get('href')
+        SearchUrl = 'https://www.xbiquge6.com/search.php?keyword=' + SearchName
+        # 拼凑出搜索结果的地址
+        Soup = getSoup(SearchUrl)
+        Books = Soup.findAll('div', class_='result-item result-game-item')
+        if Books:
+            print('{1:{0}<3}\t{2:{0}<8}\t{3:{0}<8}\t{4}'.format(chr(12288), '序号', '书名', '作者', '链接'))
+            i = 1
+            for Book in Books:
+                BookName = Book.find('a', cpos='title').get('title')
+                BookLink = Book.find('a', cpos='title').get('href')
+                Author = Book.find('p', class_='result-game-item-info-tag').findAll('span')[1].get_text().strip()
+                print('{1:{0}<3}\t{2:{0}<8}\t{3:{0}<8}\t{4}'.format(chr(12288), i, BookName, str(Author), BookLink))
+                i = i + 1
+            BookID = int(input('请输入目标小说ID：'))
+            while True:
+                # 防止用户输入的书编号不正确，此处使用死循环加条件语句
+                if 0 < BookID < len(Books) + 1:
+                    # 防止用户输入的小说编号不符合要求
+                    return Books[BookID - 1].find('a',cpos='title').get('href')
+                else:
+                    BookID = int(input('小说序号输入有误，请重新输入:'))
         else:
-            BookID = int(input('小说序号输入有误，请重新输入:'))
+            SearchName = input('未找到相关小说，请重新输入搜索关键词：')
 
 
 # Get the time when the program start.
@@ -112,7 +120,7 @@ for i in range(10):
     # For the last part, the region is not the same as it in the other ones.
     # It may cause index out of range if we treat it like the others.
     if i == 9:
-        T = threading.Thread(target=partDownLoad, args=(ChapterLinks, B * i, A+1, i))
+        T = threading.Thread(target=partDownLoad, args=(ChapterLinks, B * i, A, i))
     else:
         T = threading.Thread(target=partDownLoad, args=(ChapterLinks, B * i, B * (i + 1), i))
     T.start()
