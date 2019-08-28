@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock%}
+{% block article %}
+<section class="main_section">
+        <hr>
+        <section id="user_manage">
+            <nav>
+                <p><a href="{% url 'user_index' %}">个人资料</a></p>
+                <p><a href="{% url 'user_course' %}">我的课程</a></p>
+                <p><a href="{% url 'user_Shoppingcart' %}">购物车</a></p>
+            </nav>
+            <section class="user_info">
+                <div class="user_info_wrapper">
+                    <ul>
+                        <li>
+                            <label>账&#12288;号:</label><span>12345678</span>
+                        </li>
+                        <li>
+                            <label>余&#12288;额:</label><span>88.88</span>
+                        </li>
+                    </ul>
+                    <form action="#" method="post">
+                        <ul>
+                            <li>
+                                <label>用户名:</label>
+                                <input type="text" name="account" value="12345678">
+                            </li>
+                            <li>
+                                <label>性&#12288;别:</label>
+                                <input type="radio" name="gender" value="0" checked="checked">男
+                                <input type="radio" name="gender" value="1">女
+                            </li>
+                            <li>
+                                <label>手机号:</label>
+                                <input type="text" name="tel" value="18866668888">
+                            </li>
+                            <li>
+                                <input type="submit" value="修改">
+                                <input type="reset" value="重置">
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            </section>
+        </section>
+    </section>
+{% endblock %}

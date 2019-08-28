@@ -1,0 +1,14 @@
+def JieCheng(num):
+    Res = 1
+    for i in range(1,num+1):
+        Res = Res * i
+    return Res
+print(JieCheng(10))
+
+Def JiOuShu(i):
+#未考虑小数情况
+    if i%2 == 1:
+        print('{}是奇数'.format(i))
+    else:
+        print('{}是偶数'.format(i))
+print(JiOuShu(-5))

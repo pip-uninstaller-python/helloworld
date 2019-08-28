@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block article %}
+    <section class="main_section">
+        <section class="course_detail">
+            <img src="/{{ course.imgname }}" alt="">
+            <div class="course_detail_div">
+                <h1>{{ course.courseName }}</h1>
+                <p>课程种类：{{ course.pCategory }}</p>
+                <p>发布时间：{{ course.createDatetime|date:'Y-m-d' }}</p>
+                <p>价格：<span class="price">￥{{ course.price }}</span></p>
+                <p>
+                    {% if not view_perssion %}
+                    <a href="{% url 'user_addShoppingcart' course.id %}">加入购物车</a>
+                    <a href="{% url 'user_purchase' course.id %}">立即购买</a>
+                    {% else %}
+                    <a href="{% url 'course_video' course.id %}">立即观看</a>
+                    {% endif %}
+                </p>
+            </div>
+        </section>
+        <section class="course_summary">
+            <h2>[课程介绍]</h2>
+            <p class="summary_p">
+                {{ course.summary }}
+            </p>
+        </section>
+    </section>
+{% endblock %}
+

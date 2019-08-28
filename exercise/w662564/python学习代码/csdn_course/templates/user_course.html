@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block article %}
+    <section class="main_section">
+        <hr>
+        <section id="user_manage">
+            <nav>
+                <p><a href="{% url 'user_index' %}">个人资料</a></p>
+                <p><a href="{% url 'user_course' %}">我的课程</a></p>
+                <p><a href="{% url 'user_Shoppingcart' %}">购物车</a></p>
+            </nav>
+            <section class="user_info">
+                <div class="user_info_wrapper">
+                    <table id="user_course_table" cellpadding="0" cellspacing="0">
+                        <tr id="user_info_course_tr_first">
+                            <th width="250px">课程名称</th>
+                            <th width="200px">价格</th>
+                            <th width="100px">操作</th>
+                        </tr>
+                        {% for course in course_s %}
+                        <tr class="user_info_course_tr">
+                            <td>{{ course.courseName }}</td>
+                            <td>{{ course.price }}</td>
+                            <td><a href="{% url 'course_video' course.id %}">立即观看</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </section>
+        </section>
+    </section>
+{% endblock %} }}
