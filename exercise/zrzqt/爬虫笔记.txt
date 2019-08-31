@@ -1,0 +1,768 @@
+r - requests.get(url)
+构造一个向服务器请求资源的request对象 Request
+返回一个包含服务器资源的Response对象 Response 
+requests.get（url，params=None，**kwargs）
+url 拟获取页面的url链接
+params url中的额外参数 字典或字节流格式 可选
+**kwargs 12个控制访问的参数 
+Response对象包含爬虫返回的内容
+ import requests
+r = requests.get('http://www.baidu.com')
+print(r.status_code)
+200
+'''
+(如若这里输出是200)即请求的状态码为200，表示请求成功
+301所请求资源自动转移到新的url
+304服务器的资源与客户端上一次请求一致 不需要重新传输
+400告诉客户端发了一个错误的请求
+404页面丢失 未找到资源
+500服务器内部出现了错误
+501服务器遇到错误，无法对请求提供服务
+'''
+type（r）
+<class 'requests.models.Response'>
+返回这个类 这个类是response
+r.headers返回get页面的信息
+Response对象的属性
+r.status_code http请求的返回状态 200表示连接成功 404表示失败
+r.text http响应内容的字符串形式，即 url对应的页面内容
+r.encoding 从http header中猜测的响应内容编码方式
+r.apparent_encoding 从内容中分析出的响应内容编码方式（备选编码方式）
+r.content http响应内容的二进制形式
+Response对象的属性
+↓
+r.status_code
+↓                                                        ↓
+200                                              404或其他
+r.text r.encoding                   某些原因出错产生异常
+r.apparent_encoding
+r.content
+理解Response的编码
+r.encoding 从httpheader中猜测的相应内容的编码方式
+r.apparent_encoding 从内容中分析出的响应内容的编码方式(备选编码方式)
+r.encoding 如果header中不存在charset 则认为编码为ISO-8859-1
+r.apparent_encoding 根据网页内容分析出的编码方式
+爬取网页的通用代码框架
+Requests库的异常
+requests.ConnectionError 网络连接错误 dns查询失败，拒绝连接等
+requests.HTTPError HTTP错误异常
+requests.URLRequired url缺失异常
+requests.TooManyRedirects 超过最大的重定向次数，产生重定向异常
+requests.ConnectTimeout连接远程服务器超时异常
+requests.Timeout 请求URL超时，产生超时异常
+r.ralse_for_status() 如果不是200，产生异常requests.HTTPError
+
+def getHTMLText(url):
+	try:
+		r = requests.get(url,timeout=30)
+		r.raise_for_status()#如果状态不是200,引发HTTPError异常
+		r.encoding = r.apparent_encoding
+		return r.text
+	except:
+		return'产生异常'
+if __name__=='__main__':
+                url = 'http://www.baidu.com'
+                print(getHTMLText(url))
+HTTP协议和requests库的主要方法
+7个主要方法
+requests.request()构造一个请求，支撑以下各方法的基础方法
+requests.get() 获取HTML网页的主要方法，对应于HTTP的GET
+requests.head() 获取HTML头信息的方法，对应于HTTP的HEAD
+requests.post() 向HTML网页提交POST请求的方法， 对应于HTTP的POST
+requests.put() 向HTML网页提交PUT请求的方法，对应于HTTP的PUT
+requests.patch() 向HTML网页提交局部修改请求，对应于HTTP的PATCH
+requests.delete() 向HTML页面提交删除请求，对应于HTTP的DELETE
+http协议 超文本传输协议
+基于请求与相应模式的，无状态的应用层协议
+一般采用url作为定位网络资源的标识
+url是通过http协议存取资源的Internet路径，一个url对应一个数据资源。
+GET请求获取url位置的资源
+HEAD 请求获取URL位置资源的响应消息报告，即获得该资源的头部信息
+POST 请求向URL位置的资源后附加新的数据
+PUT 请求向URL位置存储一个资源，覆盖原URL位置的资源
+PATCH 请求局部更新URL位置的资源，即改变该处资源的部分内容
+DELETE 请求删除URL位置存储的资源
+HTTP协议对资源的操作 通过url建立
+想获得这个资源 一般是get获得全部资源 或 head或的头部信息 方法
+把自己的资源放到url对应位置 使用 put post patch 删除可用 delete
+patch和put的区别
+假设url位置有一组数据userinfo userid username 等20个字段
+修改username 其他不变
+采用patch 仅向url提交username局部更新请求
+采用put，必须将所有20个字段一并提交到url，未提交字段被删除
+patch好处，节省网络带宽
+http协议与requests库方法对应
+head方法
+r = requests.head('http://httpbin.org/get')
+r.headers
+展示头部信息
+r.text
+展示全部信息
+post方法
+payload = {'ket1':'value1','key2':'value2'}
+r = requests.post('http://httpbin.org/post',data = payload)
+print(r.text)向url post一个字典 自动编码为form表单
+r = requests.post('http://httpbin.org/post', data = 'ABC')
+print(r.text)向url post一个字符串 自动编码为data
+put方法
+payload = {'key1':'value1','key2':'value2'}
+r= requests.put('http://httpbin.org/put', data = payload)
+print(r.text)  
+put是将原有数据覆盖掉
+requests主要方法解析
+requests.request(method,url,**kwargs)
+method:请求方式，对应get/put/post等7种
+url 获取页面的url链接
+**kwargs 控制访问的参数，共13个
+requests.request(method,url,**kwargs)
+method:请求方式
+r = requests.qequest('GET'，url，**kwargs)
+r = requests.qequest('HEAD'，url，**kwargs)
+r = requests.qequest('POST'，url，**kwargs)
+r = requests.qequest('PUT'，url，**kwargs)
+r = requests.qequest('PATCH'，url，**kwargs)
+r = requests.qequest('delete'，url，**kwargs)
+r = requests.qequest('OPTIONS'，url，**kwargs)从服务器获取一些能和客户端打交道的参数
+以上是http协议请求对应的功能
+requests.request(method,url,**kwargs)
+**kwargs 控制访问的参数，均为可选项
+params 字典或字节序列，作为参数增加到url中
+kv = {'key1':'value1','key2':'value2'}
+r = requests.request('GET','http://python123.io/ws',params=kv)
+print(r.url)
+可以把一些键值对，增加到url中
+requests.request(method,url,**kwargs)
+**kwargs 控制访问的参数，均为可选项
+data：字典，字节序列或文件对象，作为Request的内容
+kv = {'key1':'value1','key2':'value2'}
+r = requests.request('POST','http://python123.io/ws',data=kv)
+body = '主体内容'
+r = requests.request('POST','http://python123.io/ws',data=body)
+json Json格式的数据，作为Request的内容 可以向服务器提交
+kv = {'key1':'value1'}
+r = requests.request('POST','http://python123.io/ws',json=kv)
+headers 字典 HTTP定制头
+hd = {'user-agant':'Chrome/10'}
+r = requests.request('POST','http://python123.io/ws',headers=hd)
+此时服务器看到的user-agent字段就是Chrome/10
+可模拟任何浏览器向服务器发送请求
+**kwargs:控制访问的参数，均为可选项
+cookies:字典或CookieJar Request中的cookie
+auth: 元组，支持http认证功能
+file 字典类型，传输文件
+fs = {'file':open('data.xls','rb')}
+r = requests.request('POST','http://python123.io/ws',files=fs)
+timeout 设定超时时间，秒为单位
+r = requests.request('GET','http://www.baidu.com',timeout=10)
+proxies 字典类型，设定访问代理服务器，可以增加登录认证
+pxs = {'http':'http://user:pass@10.10.10.1:1234'
+          'http':'https://10.10.10.1:4321'}
+r = requests.request(GET','http://www.baidu.com',proxies=pxs)
+可以有效应对爬虫的逆追踪
+allow_redirects:True_False 默认为True,重定向开关
+stream True/False 默认为True 获取内容立即下载开关
+verify:True/False 默认为True 认证SSL证书开关
+cert 本地SSL证书路径
+Requests库入门
+requests.request()              requests.put()
+requests.get()                    requests.patch()
+requests.head()                 requests.delete()
+requests.post()
+最常使用的还是get方法
+爬取网页通用代码框架
+try:
+     r = requests.get(url,timeout=30)
+     r.raise_forstatus()
+     r.encoding = r.apparent_encoding
+     return r.text
+except:
+     return'产生异常'
+遵守robots协议
+网络爬虫排除标准
+网站根目录下robots.txt文件 
+User-agent表明为哪些爬虫 表示所有就用*
+Disallow 不允许爬虫访问的资源
+网络爬虫 一般会自动或人工识别robots..txt，再进行内容爬取。
+约束性 robots协议是建议但非约束性，网络爬虫可以不遵守，但存在法律风险
+类人行为可不参考robots协议
+r.request.headers
+查看发送给路由器的头的信息
+user-agent显示的是真实的工具
+(实战代码见github)
+搜索引擎关键词提交接口
+百度的关键词接口
+http://www.baidu.com/s?wd=keyword
+360的关键词接口
+http://www.so.com/s?q=keyword
+网络图片的爬取和存储
+http://www.example.com/picture.jpg
+国家地理
+http://www.nationalgerhraaphic.com.cn
+选择一个图片web页面
+http://www.nationalgerhraaphic.com.cn/photography/photo_of_the_day/3921.html
+代码见实战
+ip归属地自动查询 
+www.ip138.com提交的ip地址的url链接
+http://m.ip138.com/ip.asp?ip=ipaddress
+单元小结
+京东商品页面的爬取
+亚马逊商品页面的爬取
+百度/360搜索关键字提交
+网络图片的爬取和存储
+ip地址归属地自动查询
+代码见实战
+http协议两个很重要的基础
+一个是网络资源定位的url
+一个是对资源操作的对应操作
+以爬虫视角 看待网络内容
+python网络爬虫与信息提取
+Requests自动爬取HTML页面 自动网络请求提交
+robots.txt 网络爬虫排除标准
+BeautifulSoup
+解析HTML页面信息标记与提取方法
+实战 中国大学排名爬虫
+BeautifulSoup使用方法
+from bs4 import BeautifulSoup
+soup = BeautifulSoup('<p>data</p>','hgtml.parser')
+BeautifulSoup库的理解
+是解析 遍历 维护'标签树'的功能库。
+<p></p>
+标签内有属性 0个或多个
+BeautifulSoup库也叫beautifulsoup4或bs4
+最常用的方式
+from bs4 import BeautifulSoup
+直接引用是
+import bs4
+经过 BeautifulSoup的处理
+可以将html中的标签树转换为 BeautifulSoup类
+它能够代表标签树的类型
+html文档 等价标签树 等价  BeautifulSoup类
+from bs4 import BeautifulSoup
+soup = BeautifulSoup('<html>data</html>','html.parser')
+soup2 = BeautifulSoup(open('D://demo.html'),'html.parser')
+BeautifulSoup对应一个HTML/XML文档的全部内容
+BeautifulSoup库解析器
+解析器                       使用方法                          条件
+bs4的HTML解析器 BeautifulSoup(mk,'html.parser') 安装bs4库
+lxml的HTML解析器 BeautifulSoup(mk,'lxml')   pip install lxml
+lxml的XML解析器  BeautifulSoup(mk,'xml')     pip install lxml
+html5lib的解析器   BeautifulSoup(mk,'html5lib') pip install html5lib
+BeautifulSoup类的基本元素
+基本元素                                            说明
+Tag                         标签，最基本的信息组织单元，分别用<>和</>标明开头和结尾
+Name                     标签的名字，<p>...</p>的名字是'p', 格式 <tag>.name
+Attributes               标签的属性，字典形式组织，格式:<tag>.arrs
+NavigableString      标签内非属性字符串，<>..</>中字符串，格式<tag>.string
+Comment               标签内字符串的注释部分，一种特殊的Comment类型
+任何存在于HTML语法的标签，都可以使用soup.tag访问获得
+存在多个想通tag标签时，用soup.tag返回其中第一个
+对任何标签，使用.name的方式，获得他的名字 显示出来是字符串类型
+soup.a 获得a标签 soup.p 获得p标签
+p.name获得标签的名字 
+属性.attrs 无论是否存在属性 都会返回一个字典类型
+标签之间的字符串 可以用.string获取
+BeautifulSoup库是对标签功能的遍历集合
+标签树的下行遍历
+属性                                   说明
+.contents            子节点的列表，将<tag>所有儿子节点存入列表
+.children             子节点的迭代类型，与.content类似，用于循环遍历儿子节点
+.descendants       子孙节点的迭代类型，包含所有子孙节点，用于循环遍历
+for child in soup.body.children:
+      print(child) 遍历儿子节点
+for child in soup.body.children:
+      print(child) 遍历子孙节点
+标签树的上行遍历
+属性                                  说明
+.parent                     节点的父亲标签
+.parents                    节点先辈标签的迭代类型，用于循环遍历先辈节点
+
+soup = BeautifulSoup(demo,'html,parser')
+for parent in soup.a.parents:
+      if parent is None:
+                 print(parent)
+      else:
+                 print(parent.name)
+p
+body
+html
+[document]
+标签树的平行遍历
+属性                                          说明
+.next_sibling                       返回按照html文本顺序的下一个平行节点标签
+.previous_sibling                 返回按照html文本顺序的上一个平行节点标签
+.next_siblings                      迭代类型，返回按照html文本顺序的后续所有平行节点标签
+.previous_siblings                迭代类型，返回按照html文本顺序的谦虚所有平行节点标签
+标签树的平行遍历必须发生在同一个父节点下的各节点间
+title和p不是平行遍历
+无法通过title获得p
+标签树的平行遍历
+for sibling in soup.a.next_sibings:
+      print(sibling)遍历后续节点
+for sibling in soup.a.previous_siblings:
+     print(sibling)遍历前续节点
+下行遍历
+.contents返回列表类型
+.children返回迭代类型只能用在for循环语句中
+.descendants返回迭代类型只能用在for循环语句中
+上行遍历
+.parent 返回当前节点的父亲节点
+.parents 返回当前节点的所有先辈节点
+平行遍历
+.next_sibling   
+.previous_sibling
+.next_siblings迭代类型只能用于 for in 结构
+.previous_siblings迭代类型只能用于 for in 结构
+基于bs4库的html格式输出
+bs4库的prettify()方法
+print(soup.a.prettify())
+bs4库的编码
+soup = BeautifulSoup('<p>中文</p>','html.parser')
+soup.p.string
+print(soup.p.prettify())
+小结
+使用下述引入
+from bs4 import BeautifulSoup
+soup = BeautifulSoup('<p>data</p>','html.parser')
+bs4库的基本元素
+tag 标签
+name 标签名字
+Attributes 标签属性
+NavigableString 标签之间的字符串
+Comment  标签name中间的注释字符串
+bs4库的遍历功能
+.contents 
+.children
+.descoendants
+分别获得儿子节点以及子孙节点的相关信息
+也可做上行遍历
+.parent 获得当前节点的父亲节点
+.parsents 获得当前节点的所有先辈节点
+也可做平行遍历
+.next_sibling
+.previous_sibling
+.next_siblings
+.previous_siblings
+信息标记的三种形式
+标记后的信息可形成信息组织结构，增加信息维度
+标记后的信息可用于通信，存储或展示
+标记的结构与信息一样具有重要价值
+标记后的信息更利于程序理解和运用
+html的信息标记
+超文本标记语言 是www的信息组织方式
+xml 扩展标记语言 标签为主构建信息
+JSON
+有类型的键值对 key：value
+对信息类型的定义叫键 对信息值的描述，叫value
+当我们的值中有多个信息的时候，一个名字或一个键，对应多个值，采用中括号加逗号
+键值对之间可以嵌套使用，可以用一个键值对，放在另外一个键值对值的部分，
+嵌套使用时，采用大括号的形式
+json使用有类型的键值，将信息组合起来
+YAML
+采用无类型键值对 使用缩进来表达所属关系
+减号-表达并列关系 竖线丨表达整块数据 #表示注释
+三种标记形式的比较
+XML是用尖括号，标签表达信息的标记形式
+json是用有类型的键值对，表达信息的标记形式
+yaml是一种用类型表达信息的标记方式
+xml 最早的通用信息标记语言，可扩展性好，但繁琐
+json 信息有类型，适合程序处理(js)，较xml简洁
+yaml 信息无类型，文本信息比例最高，可读性好
+三种信息标记形式的比较
+xml Internet上的信息交互与传递
+json 移动应用云端和节点的信息通信，无注释
+yaml 各类系统的配置文件，有注释易读
+信息提取的一般方法
+方法一 完整解析信息的标记形式，再提取关键信息
+xml json yaml
+需要标记解析器 例 bs4库的标签树遍历
+有点 信息解析准确
+缺点 提取过程繁琐，速度慢
+方法二 无视标记形式，直接搜索关键信息
+搜索
+对信息的文本查找函数即可
+优点 提取过程简洁，速度较快
+缺点 提取结果准确性与信息内容相关
+融合方法
+结合形式解析与搜索方法， 提取关键信息
+xml json yaml 搜索
+需要标记解析器及文本查找函数
+实例 
+提取html中所有url链接
+思路 1搜索到所有<a>标签
+       2解析<a>标签格式，提取href后的链接内容
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(demo,'html.parser')
+for link in soup.find_all('a'):
+     print(link.get('href'))
+基于bs4库的html内容查找方法
+demo变量
+'<html><head><title>This is a python demo page</title></head>\r\n<body>\r\n<p class="title"><b>The demo python introduces several python courses.</b></p>\r\n<p class="course">Python is a wonderful general-purpose programming language. You can learn Python from novice to professional by tracking the following courses:\r\n<a href="http://www.icourse163.org/course/BIT-268001" class="py1" id="link1">Basic Python</a> and <a href="http://www.icourse163.org/course/BIT-1001870001" class="py2" id="link2">Advanced Python</a>.</p>\r\n</body></html>'
+find_all(name,attrs,recursive,string,**kwargs)
+返回一个类表类型，存储查找的结果
+name:对标签名称的检索字符串
+attrs:对标签属性值的检所字符串，可标注属性检索
+检索a标签
+soup.find_all('a')
+将a标签和b标签作为一个参数
+soup.fiond_all(['a','b']) a和b是作为一个列表形式
+for tag in soup.find_all(True):
+     print(tag.name)
+所有标签名称被打印出来
+只显示其中以b开头的标签，包括b和body 使用正则表达式
+import re
+for tag in soup.find_all(re.compile('b')):
+print(tag.name)
+显示body  b
+soup.find_all('p','course')
+给出带有course属性的p标签
+以link1的值作为查找元素
+soup.find_all(id='link1')
+返回的就是id包含link1的元素
+若要查找属性的部分信息，比如通过link查找包含link 以及link1link2的所有内容 用正则表达式
+import re
+soup.find_all(id=re.compile('link'))
+输出以link开头但不一定是link完全一致的标签信息
+正则表达式是搜索词的一部分
+recursive: 是否对子孙全部检索，默认True    从某一个标签开始的，后续所有信息
+只搜索儿子这一层 改为False
+soup.find_all('a') 首先查找a标签
+soup.find_all('a',recursive=False)
+返回空
+说明他的儿子节点是没有a标签的
+string: <></>中字符串区域的检索字符串
+soup 看一下soup完整的
+soup.find_all(string = 'Basic Python')
+显示[Basic Python']
+使用正则
+import re
+soup.find_all(string = re.compile('python'))
+可以把含有python的字符串全部检索出来
+<tag>()等价于<tag>.find_all()
+<soup>()等价于soup.find_all()
+扩展方法
+方法                         说明
+<>.find()               搜索且只返回一个结果，字符串类型，同.find_all()参数
+<>.parents()          在先辈节点中搜索，返回列表类型，同.find_all()参数
+<>.find_parent()    在先辈节点中返回一个结果，字符串类型，同.find参数
+<>_next_siblings()   在后续平行节点中搜索，返回列表类型，同.find_all()参数
+<>next_sibling()    在后续平行节点中返回一个结果，字符串类型，同.find参数
+<>.find_previous_siblings()  在前序平行节点中搜索，返回列表类型，同.find_all()参数
+<>.previous_sibling()   在前序平行节点中返回一个结果，字符串类型，同.find参数
+总结
+信息标记与提取方法
+xml 使用尖括号
+json 有类型的键值对
+yaml 无类型的键值对
+严格遵循信息标记方法的提取方法
+或无视的提取方法
+实例 中国大学排名定向爬虫
+功能描述 
+输入 大学排名url链接
+输出 大学排名信息的屏幕输出 (排名，大学名称，总分)
+技术路线 requests-bs4
+定向爬虫，仅对输入url进行爬取，不扩展爬取
+这段代码使用tr标签来索引的一段信息 相关参数都写在了html页面信息中 因此定向爬虫是可以实现的
+程序结构设计
+1 从网络上获取大学排名网页内容
+2 提取网页内容中信息到合适的数据结构
+3 利用数据结构展示并输出结果
+可采用二维数据列表
+1 从网络上获取大学排名网页内容
+getHTMLText()
+2提取网页内容中信息到合适的数据结构
+fillUnivList()
+3利用数据结构展示并输出结果
+printUnivList()
+format中文对齐问题的原因
+: 引号符号
+<填充>用于填充单个字符
+<对齐> <左对齐， >右对齐，^居中对齐
+<宽度>槽的设定输出宽度
+,数字千位分隔符适用于整数和浮点数
+<精度>浮点数小数部分的精度或字符串的最大输出长度
+<类型>整数类型b,c,d,o,x,X浮点数类型e,E,f,%
+当中文字符宽度不够时，采用西文字符填充，中西文字符占用宽度不同
+中文对齐问题的解决
+采用中文字符的空格填充chr(12288)
+总结
+本次实例采用了requests-bs4路线实现了中国大学排名定向爬虫
+对中英文混排输出问题进行优化
+正则表达式
+regular expression regex RE
+正则表达式是用来间接表达一组字符串的表达式
+'PN'
+'PYN'
+'PYTHN'
+'PYTHON'
+正则表达式
+P(Y|YT|YTH|YTHO)?N
+正则表达式的优势 简洁
+一行胜千言
+'PY'
+'PYY'
+'PYYY'
+'PYYYY'
+...
+'PYYYY....'
+正则表达式
+PY+
+'PY'开头
+后续存在不多于10个字符
+后续字符不能是'P'或'Y'
+'PYABC' √
+'PYKXYZ'×
+正则表达式
+PY[^PY]{0,10}
+正则是一种通用的字符串表达框架
+简洁表达一组字符串的表达式
+针对字符串表达'简洁'和'特征'思想的工具
+判断某字符串的特征归属
+正则表达式在文本处理中十分常用
+表达文本类型的特征(病毒,入侵等)
+同时查找或替换一组字符串
+匹配字符串的全部或部分
+正则表达式主要应用在字符串匹配中
+编译:将符合正则表达式语法的字符串转换成正则表达式特征
+p=re.compile(regex)
+编译后的特征与一组字符串是对应的
+而编译之前的正则表达式，只是一个符合正则表达式语法的单一字符串，并不是真正意义上的正则表达式
+正则表达式的语法
+P(Y|YT|YTH|YTHO)?N
+正则表达式语法由字符和操作符构成
+操作符                   说明                                                               实例
+.                    表示任何单个字符 
+[ ]                  字符集，对单个字符给出取值范围                   [abc]表示a,b,c[a-z]表示a到z单个字符
+[^]                 非字符集，对单个字符给出排除范围                [^abc]表示非a或b或c的单个字符
+*                    前一个字符0次或无限次扩展                             abc*表示 ab,abcc,abccc等
++                    前一个字符1次或无限次扩展                         abc+表示abc,abcc,abccc等
+?                    前一个字符0次或1次扩展                                abc?表示ab,abc   
+|                     左右表达式任意一个                                       abc|def表示 abc,def
+{m}                 扩展前一个字符m次                                      ab{2}c表示abcc
+{m,n}              扩展前一个字符m至n次(含n)                          ab{1,2}c表示abc,abbc
+^                   匹配字符串开头                                             ^abc表示abc且在一个字符串的开头
+$                   匹配字符串结尾                                              abc$表示abc且在一个字符串的结尾
+( )                   分组标记，内部只能使用|操作符                     (abc)表示abc,(abc|def)表示abc,def
+\d                   数字，等价于[0-9]
+\w                 单词字符，等价于[A-Za-z0-9_]
+正则表达式语法实例
+正则表达式                                                         对应字符串
+P(Y|YT|YTH|YTHO)?N                         'PN','PYN','PYTN','PYTHN','PYTHON'
+PYTHON+                                           'PYTHON','PYTHONN','PYTHONNN'...
+PY[TH]ON                                            'PYTON','PYHON'
+PY[^TH]?ON                                    'PYON','PYaON','PYbON','PYcON'...
+PY{:3}N                                               'PN','PYN','PYYN','PYYYN'
+经典正则表达式实例
+^[A-Za-z]+$                                        由26个字母组成的字符串
+^[A-Za-z0-9]+$                                   由26个字母和数字组成的字符串
+^-?\d+$                                              整数形式的字符串
+^[0-9]*[1-9][0-9]*$                               正整数形式的字符串
+[1-9]\d{5}                                             中国境内邮政编码,6位
+[\u4e00-\u9fa5]                                   匹配中文字符
+\d{3}-\d{8}|\d{4}-\d{7}                           国内电话号码，010-68913536
+匹配IP地址的正则表达式
+IP地址字符串形式的正则表达式
+(IP地址分4段，每段0-255)
+\d+.\d+.\d+.\d+
+\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}.
+精确写法
+0-99 : [1-9]?\d         100-199: 1\d{2}
+200-249:2[0-4]\d      250-255:25[0-5]
+(([1-9]?\d|1\d{2}|2[0-4]\d|25[0-5]).){3}([1-9]?\d|1\d(2)|2[0-4]\d)|25[0-5])
+Re库的基本使用
+Re里是python的标准库，主要用于字符串匹配
+调用方式 import re
+正则表达式的表示类型
+raw string类型(原生字符串类型)
+re库采用raw string类型表示正则表达式 表示为r'text'
+例如 
+r'[1-9]\d{5}'邮政编码
+r'\d{3}-\d{8}|\d{4}-\d{7}'中国地区电话号码
+raw string 是不包含转义符的字符串
+string类型,更繁琐
+例如
+'[1-9]\\d{5}'
+'\\d{3}-\\d{8}|\\d{4}-\\d{7}'
+当正则表达式包含转义符时
+使用raw string
+re库主要功能函数
+函数                                说明
+re.search()           在一个字符串中搜索匹配正则表达式的第一个位置，返回match对象
+re.match()           从一格字符串的开始位置起匹配正则表达式，返回match对象
+re.findall()           搜索字符串，以列表类型返回全部能匹配的子串
+re.split()              将一个字符串按照正则表达式匹配结果进行分割，返回列表类型
+re.finditer()         搜索字符串，返回一个匹配结果的迭代类型，每个迭代元素是match对象
+re.sub()               在一个字符串中替换所有匹配正则表达式的子串，返回替换后的字符串
+re.search(pattern,string,flags=0)
+在一个字符串中搜索匹配正则表达式的第一个位置，返回match对象
+pattern: 正则表达式的字符串或原生字符串表示
+string:待匹配字符串
+flags:正则表达式使用时的控制标记
+常用标记                                    说明
+re.I re,IGNORECASE                  忽略正则表达式的大小写，[A-Z]能够匹配小写字符
+re.M re.MULTLINE                    正则表达式中的^操作符能够将给定字符串的每行当做匹配开始
+re.S re.DOTALL                         正则表达式中的.操作符能够匹配所有字符，默认匹配除换行外的所有字符
+import re
+match = re.search(r'[1-9]\d{5}','BIT 100081')
+if match:
+      print(match.group(0))
+输出100081
+re.match(pattern,string,flags=0)
+从一个字符串的开始位置起匹配正则表达式，返回match对象
+pattern:正则表达式的字符串或原生字符串表示
+string:待匹配字符串
+flags:正则表达式使用时的控制标记
+如果希望对匹配的结果进行使用的时候，一定要加if语句判断match是不是空的
+import re
+match = re.match(r'[1-9]\d{5}','100081 BIT')
+if match:
+       match.group(0)
+输出'100081'
+re.findall(pattern,string,flags=0)
+pattern:正则表达式的字符串或原生字符串表示
+string:待匹配字符串
+flags:正则表达式使用时的控制标记
+import re
+ls = re.finadll(r'[1-9]\d{5}','BIT100081 TSU100084')
+ls
+输出['100081','100084']
+re.split将一个字符串按照正则表达式匹配结果进行分割，返回列表类型
+pattern:正则表达式的字符串或原生字符串表示
+string:待匹配字符串
+maxsplit:最大分割数,剩余部分作为最后一个元素输出
+flags:正则表达式使用时的控制标记
+import re
+re.split(r'[1-9]\d{5}','BIT100081 TSU100084')
+输出['BIT','TSU','']
+re.split(r'[1-9]\d{5}','BIT100081 TSU100084',maxsplit=1)
+输出['BIT','TSU100084']
+re.finditer(pattern,string,flags=0)
+搜索字符串，返回一个匹配结果的迭代类型，每个迭代元素是match对象
+pattern:正则表达式的字符串或原生字符串表示
+string:待匹配字符串
+flags:正则表达式使用时的控制标记
+import re
+for m in re.finditer(r'[1-9]\d{5}','BIT100081 TSU100084'):
+     if m:
+                 print(m.group(0))
+输出100081
+100084
+迭代的获得每一次正则表达式的结果，并对这个结果进行单独处理
+re.sub(pattern,repl,string,count=0,flag=0)
+在一个字符串中替换所有匹配正则表达式的子串，返回替换后的字符串
+#用一个新字符串替换掉正则表达式匹配到的字符串，并与原来的字符串进行组合
+pattern:正则表达式的字符串或原生字符串表示
+repl:替换匹配字符串的字符串
+string:待匹配字符串
+count:匹配的最大替换次数
+flags:正则表达式使用时的控制标记
+import re
+re.sub(r'[1-9]\d{5}',':zipcode','BIT100081 TSU100084')
+输出'BIT:zipcode TSU:zipcode'
+#邮政编码部分被替换成了zipcode
+re库主要功能函数
+函数                                说明
+re.search()           在一个字符串中搜索匹配正则表达式的第一个位置，返回match对象#应该对match对象有所了解
+re.match()           从一格字符串的开始位置起匹配正则表达式，返回match对象#应该对match对象有所了解
+re.findall()           搜索字符串，以列表类型返回全部能匹配的子串
+re.split()              将一个字符串按照正则表达式匹配结果进行分割，返回列表类型
+re.finditer()         搜索字符串，返回一个匹配结果的迭代类型，每个迭代元素是match对象#应该对match对象有所了解
+re.sub()               在一个字符串中替换所有匹配正则表达式的子串，返回替换后的字符串
+Re库的另一种等价方法
+rst = re.search(r'[1-9]\d{5}','BIT 100081')
+函数式用法:一次性操作
+面向对象用法:编译后的多次操作
+pat = re.compile(r'[1-9]\d{5}')#将一个正则表达式的字符串，编译成一个正则表达式的类型
+rst = pat.search('BIT 100081')#直接调用search，match等六个方法获得相关结果
+这种方法的好处是，经过一次编译，当我们需要多次对正则表达式进行使用和匹配时，就可以用这种方式来加快整个程序的运行
+re.gex = re.compile(pattern,flags=0)
+将正则表达式的字符串形式编译成正则表达式对象
+pattern:正则表达式的字符串或原生字符串表示
+flags:正则表达式使用时的控制标记
+字符串或者原生字符串表示并不是正则表达式，他只是一种表示
+regex = re/compile(r'[1-9]\d{5}')
+通过compile编译生成了对象regex，regex才是正则表达式,通过这样来实现正则表达式和表示之间的对应，这种对应，使得我们能够更好的理解正则表达式对象的使用方式
+经过compile之后的正则表达式，就可以使用他的对象的方法，这个方法与re库提供的六个方法是一致的
+Re库的另一种等价方法
+函数                                说明
+re.search()           在一个字符串中搜索匹配正则表达式的第一个位置，返回match对象#搜索
+re.match()           从一格字符串的开始位置起匹配正则表达式，返回match对象#匹配
+re.findall()           搜索字符串，以列表类型返回全部能匹配的子串#查询所有字符串
+re.split()              将一个字符串按照正则表达式匹配结果进行分割，返回列表类型#分割
+re.finditer()         搜索字符串，返回一个匹配结果的迭代类型，每个迭代元素是match对象#分会迭代类型
+re.sub()               在一个字符串中替换所有匹配正则表达式的子串，返回替换后的字符串#替换里面的字符串
+调用这些函数的时候，需要将其中的正则表达式去掉，只需要给出相关的需要匹配的字符串就可以。
+Re库的match方法
+import re
+match =re.search(r'[1-9]\d{5}','BIT 100081')
+if match:
+             print(match.group(0))
+输出100081
+type(match)
+<class '_sre.SRE_Match'>
+Match对象的属性
+属性               说明
+.string           待匹配的文本
+.re                匹配时使用的pattern对象(正则表达式)
+.pos              正则表达式搜索文本的开始位置
+.endpos        正则表达式搜索文本的结束位置
+ Match对象的方法
+方法                说明
+.group(0)       获得匹配后的字符串
+。start()         匹配字符串在原始字符串的开始位置
+.end              匹配字符串在原始字符串的结束位置
+.span()           返回(.start(),.end())
+ m = re.search(r'[1-9]\d{5}','BIT 100081 TSU100084')
+m.string
+'BIT 100081 TSU100084'
+m.re
+re.compile('[1-9]\\d{5}')
+只有经过compile的正则表达式才是真正的正则表达式
+m.pos
+0
+ m.endpos
+20
+m.group(0)
+'100081'
+Re库的贪婪匹配和最小匹配
+match = re.search(r'PY.*N','PYANBNCNDN')以PY字母开头，以N结尾，中间可以有若干个字符串的字符串，匹配的是PYANBNCNDN的字符串
+match.group(0)
+贪婪匹配
+Re库默认采用贪婪匹配，即输出匹配最长的子串。
+上者输出
+'PYANBNCNDN'
+最小匹配 如何输出最短字符串
+match = re.search(r'PY.*?N','PYANBNCNDN')
+星号后加问号
+上者输出
+'PYAN'
+最小匹配操作符
+操作符                    说明
+*?                  前一个字符0次或无限次扩展，最小匹配
++?                 前一个字符1次或无限次扩展，最小匹配
+??                  前一个字符0次或1次扩展，最小匹配
+{m,n}?            扩展前一个祝福m至n次(含n)，最小匹配
+当有操作符可以匹配不同长度的时候，都可以在操作符后增加一个问号，来获得最小匹配的结果
+单元小结
+Re库正则表达式入门
+正则表达式是用来简洁表达一组字符串的表达式
+六个相关函数
+re.search()                                                  regex.search()
+re.match()                                                  regex.match()
+re.findall()         =regex=re.compile()   +     regex.findall()          
+re.split()                                                      regex.split()
+re.finditer()                                                 regex.finditer()
+re.sub()                                                       regex.sub()
+淘宝商品信息定向爬虫
+功能描述
+目标：获取淘宝搜索页面的信息，提取其中的商品名称和价格。
+理解：淘宝的搜索接口，翻页的处理。
+技术路线：requests-re
+程序的结构设计
+步骤1：提交商品搜索请求，循环获取页面。
+步骤2：对于每个页面，提取商品名称和价格信息。
+步骤3：将信息输出到屏幕上。
+实例3 股票数据定向爬虫
+采用requests-bs4-re路线实现了股票信息爬取和存储
+Scrapy框架
+专业爬虫框架
+爬虫框架的基本使用
