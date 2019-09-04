@@ -20,12 +20,15 @@ V04  20190823
 V05  20190825
 ---修复因根据索引词无法找到小说而导致在选择小说界面无限死循环的BUG
 ---将小说part更改为从part1开始
+V06  20190904
+---导入PrettyTable模块，美化索引结果的输出
 '''
 ####################################################################################################################
 import requests
 from bs4 import BeautifulSoup
 import time
 import threading
+from prettytable import PrettyTable
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -85,14 +88,15 @@ def getBookLink():
         Soup = getSoup(SearchUrl)
         Books = Soup.findAll('div', class_='result-item result-game-item')
         if Books:
-            print('{1:{0}<3}\t{2:{0}<8}\t{3:{0}<8}\t{4}'.format(chr(12288), '序号', '书名', '作者', '链接'))
             i = 1
+            tb = PrettyTable(['序号', '书名', '作者', '链接'])
             for Book in Books:
                 BookName = Book.find('a', cpos='title').get('title')
                 BookLink = Book.find('a', cpos='title').get('href')
                 Author = Book.find('p', class_='result-game-item-info-tag').findAll('span')[1].get_text().strip()
-                print('{1:{0}<3}\t{2:{0}<8}\t{3:{0}<8}\t{4}'.format(chr(12288), i, BookName, str(Author), BookLink))
                 i = i + 1
+                tb.add_row([i, BookName, str(Author), BookLink])
+            print(tb)
             BookID = int(input('请输入目标小说ID：'))
             while True:
                 # 防止用户输入的书编号不正确，此处使用死循环加条件语句
