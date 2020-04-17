@@ -1,0 +1,52 @@
+TM细心点。。路由少个斜线找半天
+
+
+vue一般语法
+v-on:   ==  :    绑定属性
+v-bind:   == @	绑定事件
+v-for=		列表循环
+v-model=		数据双向绑定
+v-html=		经过解析后再显示的html 不然就显示你真实数据
+v-if= v-elseif= v-else=		有条件的渲染
+v-show=  后面接boolean值的表达式 true则显示
+v-on=    遍历后面的事件，全都绑定
+v-bind=	遍历对象属性 绑定属性名=值
+
+<chirldnode @click.native=''> 
+或
+<chirldnode @click=''>
+子组件temple<button v-on='ownlis'>
+子组件参数 computed:{ownlis（）{return Object.assign({},$listreners)}}
+子组件的点击事件可触发父组件的点击事件
+
+
+$emit('my-event') 子组件注册一个事件，可以被父组件监听
+子组件内<button @click='$emit(my-event)'>
+父组件<chirldnode @my-event='function'>，则子组件元素的点击会造成父组件执行函数
+
+父子(<chirldnode>)组件内数据的传递
+子组件接受父组件的数据
+父组件内<chirldnode :title='data'></chirldnode>
+子组件内组件参数props:['title']  一定是个列表 这是个坑
+
+父组件接受子组件内数据
+父组件内<chirldnode v-model='data'></chirldnode>
+子组件内组件参数添加一个model:{prop:'checked',event:'change'}
+props:['checked']
+template:'<input :checked='checked',@change=$emit('change',$event.target.checked) type='checkbox'></input>'
+
+插槽
+<slot>
+可在子组件内嵌入这样的标签，使得父组件中子组件内嵌的文本可以显示，否则全被覆盖
+父组件定义子组件可以
+<chirldnode><template v-slot:name>content</template></chirldnode>
+子组件
+<template><slot name='name'></slot></template>
+要使父组件获取子组件的数据可以这样做
+<chirlnode><template v-slot:name='a'>{{a.data}}</template></chirldnode>
+or
+<chirlnode><template v-slot:name='{data}'>{{data}}</template></chirldnode>
+or
+<chirlnode><template v-slot:name='{data:person}'>{{person}}</template></chirldnode>
+子组件
+<template :data=data></template>
