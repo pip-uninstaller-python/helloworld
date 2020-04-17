@@ -1,0 +1,34 @@
+Line 用来画线
+Kline 用来画 K 线
+Pie 用来画饼
+Grid 用来画多个坐标系
+Overlap 用来叠加不同对象 (比如 Line 和 Kline)
+Timeline 用来画时间轴轮播图
+WordCloud 主要展示词云图
+
+
+
+from pyecharts.charts import Bar        柱状图
+bar = (
+    Bar()
+    .add_xaxis(["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"])
+    .add_yaxis("商家A", [5, 20, 36, 10, 75, 90])
+)
+bar.render()
+ .set_global_opts(title_opts=opts.TitleOpts(title="主标题", subtitle="副标题"))
+ .set_global_opts(title_opts={"text": "主标题", "subtext": "副标题"})
+
+
+
+
+
+渲染成图片文件
+from pyecharts.charts import Bar
+from pyecharts.render import make_snapshot
+from snapshot_selenium import snapshot
+bar = (
+    Bar()
+    .add_xaxis(["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"])
+    .add_yaxis("商家A", [5, 20, 36, 10, 75, 90])
+)
+make_snapshot(snapshot, bar.render(), "bar.png")
