@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>snake</title>
+    <style>
+
+     body{
+        margin: 10px 20px;
+     }
+     p{
+         margin: 2px;
+     }
+    #chessboard{
+        border-collapse:collapse;
+    }
+    tr{
+        border:1px solid red;
+        border-collapse:collapse;
+    }
+    td{
+        width:15px;
+        height:15px;
+        border:1px solid grey;
+    }
+
+    .warm{
+
+    }</style>
+    <script>
+        let list=[],egg,eggNum=-1,x=0,y=0,timer,preD=3,snake;
+        function drawBack() {
+            let div=document.getElementById('chessboard')
+            for(let i=0;i<30;i++){
+                let tr=div.appendChild(document.createElement('tr'))
+                for(let j=0;j<30;j++){
+                    tr[j]=tr.appendChild(document.createElement('td'))
+                }
+                list[i]=tr
+            }
+        }
+        function ranIndex() {
+            return Math.floor(Math.random()*30)
+        }
+        function makeEgg() {
+            eggNum++
+            egg=list[ranIndex()][ranIndex()]
+            egg.style.backgroundColor='red'
+            document.getElementById('warm').innerHTML=`吃了${eggNum}个`
+        }
+        class Snake{
+            constructor(speed) {
+                this.body=[list[0][0]]
+                this.body[0].style.backgroundColor='black'
+                this.speed=speed;
+            }
+            move(){
+                clearInterval(timer)
+                let direction=arguments[0]
+                if ((direction===1&&preD===3)||(direction===3&&preD===1)){
+                    direction=preD
+                }else if ((direction===2&&preD===4)||(direction===4&&preD===2)){
+                    direction=preD
+                }
+                preD=direction
+                switch (direction) {
+                    case 1:y--;break;
+                    case 2:x--;break;
+                    case 3:y++;break;
+                    case 4:x++;break;
+                    default:return;
+                }
+                if (x<0||x>29||y<0||y>29){
+                    clearInterval(timer)
+                    let r=confirm('你撞墙了')
+                    if(r){
+                        window.location.reload()
+                    }else{
+                        window.close()
+                    }
+
+                }
+                this.body.push(list[x][y])
+                if(this.bself()){
+                    clearInterval(timer)
+                    let r=confirm('咬到自己了')
+                    if(r) {
+                        window.location.reload()
+                    }else {
+                        window.close()
+                    }
+                }
+                if (list[x][y]===egg){
+                    this.body[0].style.backgroundColor='black'
+                    makeEgg()
+                } else{
+                    this.body[0].style.backgroundColor='white'
+                    this.body.shift()
+                }
+                this.body[this.body.length-1].style.backgroundColor='black'
+                let self=this
+                timer=setInterval(function () {
+                    self.move(direction)
+                },this.speed)
+
+
+            }
+            bself(){
+                let bodylength=this.body.length-1
+                for(let i=0;i<bodylength;i++){
+                    if (this.body[bodylength]===this.body[i]){
+                        return true
+                    }
+                }
+                return false
+            }
+
+        }
+        window.onload=function(){
+            drawBack()
+            makeEgg()
+            snake=new Snake(300)
+            window.addEventListener('keydown',function (e) {
+                switch (e.keyCode) {
+                    case 37:snake.move(1);break;
+                    case 38:snake.move(2);break;
+                    case 39:snake.move(3);break;
+                    case 40:snake.move(4);break;
+                    default:break;
+                }
+
+            })
+        }
+        function chSpeed(value) {
+            let speed=document.getElementById('speed').value
+            if(!speed){
+                if (snake.speed>100){
+                    snake.speed-=value
+                }
+            }else{
+                snake.speed=speed
+            }
+        }
+    </script>
+</head>
+<body>
+<button onclick="snake.move(3)">开始游戏</button>
+<input type="number" id="speed">
+<button onclick="chSpeed(100)">改变速度(ms)</button>
+<p>按方向键或点击开始游戏以开始游戏</p>
+<p>自定义初始速度，点击改变速度生效，初始速度为300ms 或点击按钮加快速度</p>
+<div id="warm"></div>
+<div id="chessboard" ></div>
+
+<!--<button onclick="clear()">暂停</button>-->
+</body>
+</html>
