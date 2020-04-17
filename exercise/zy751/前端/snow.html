@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>snow</title>
+    <script>
+        window.onload=function () {
+            let snows=[];
+            let canvas=document.getElementById('snow');
+            let context=canvas.getContext('2d');
+            let back_img=new Image()
+            back_img.src='https://s2.ax1x.com/2019/05/25/VAY1nf.jpg'
+            class Snow{
+                constructor(x,radis,speed,color){
+                    this.x=x;
+                    this.y=0;
+                    this.radis=radis;
+                    this.speed=speed;
+                    this.color=color
+                }
+                draw(context){
+                    context.save()
+                    context.translate(this.x,this.y)
+                    context.fillStyle=this.color
+                    context.beginPath()
+                    context.arc(0,0,this.radis,0,2*Math.PI,true)
+                    context.closePath()
+                    context.fill()
+                    context.restore()
+                }
+            }
+            function createSnow() {
+                if(snows.length<1000){
+                    let x=Math.random()*canvas.width+1
+                    let radis=Math.random()*3+1
+                    let speed=Math.random()*3+1
+                    let color='white'
+                    let snow=new Snow(x,radis,speed,color)
+                    snows.push(snow)
+                }
+            }
+            function snowMove(snow,index) {
+                snow.y+=snow.speed;
+                if(snow.y>canvas.height){
+                    snows.splice(index,1)
+                }else{
+                    snow.draw(context)
+                }
+            }
+            function init() {
+                requestAnimationFrame(init);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                context.drawImage(back_img,0,0,canvas.width,canvas.height);
+                createSnow();
+                snows.forEach(snowMove)
+            }
+            init()
+        }
+    </script>
+    <style>
+        body{
+            position: relative;
+        }
+        #game{
+            position: absolute;
+            top: 50%;
+            right: 50%;
+            transform: translate(-50%,-50%);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="snow" style="height: 100%;width: 100%"> </canvas>
+    <form id="game" action="snake.html">
+        <input type="submit" value="开始游戏">
+    </form>
+</body>
+</html>
