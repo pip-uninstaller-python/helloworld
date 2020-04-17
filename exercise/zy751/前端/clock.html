@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script>
+        window.onload=function () {
+            let canvas=document.getElementById('clock')
+            let ctx=canvas.getContext('2d')
+            var pi=Math.PI
+            init()
+            function drawBack(ctx) {
+                ctx.clearRect(0,0,400,400)
+                ctx.save()
+                ctx.translate(200,200)
+                ctx.beginPath()
+                ctx.arc(0,0,195,0,2*pi)
+                ctx.lineWidth=10
+                ctx.stroke()
+                ctx.closePath()
+                for(let i=0;i<60;i++){
+                    ctx.save()
+                    ctx.rotate(-pi/2+i*pi/30)
+                    ctx.beginPath()
+                    ctx.moveTo(160,0)
+                    ctx.lineTo(190,0)
+                    ctx.lineWidth=i%5?2:4
+                    ctx.strokeStyle=i%5?'blue':'red'
+                    ctx.stroke()
+                    ctx.closePath()
+                    ctx.restore()
+                }
+                ctx.restore()
+            }
+            function drawAllHands(ctx) {
+                let T=new Date()
+                let S=T.getSeconds()
+                let M=T.getMinutes()
+                let H=T.getHours()
+                let Sangle=S*pi/30
+                let Mangle=M*pi/30+Sangle/60
+                let Hangle=H*pi/6+Mangle/12
+                drawHand(ctx,Sangle,170,1,'red')
+                drawHand(ctx,Mangle,160,3,'black')
+                drawHand(ctx,Hangle,70,6,'black')
+            }
+            function drawHand(ctx,angle,length,width,color) {
+                ctx.save()
+                ctx.translate(200,200)
+                ctx.rotate(-pi/2+angle)
+                ctx.beginPath()
+                ctx.moveTo(0,0)
+                ctx.lineWidth=width
+                ctx.strokeStyle=color
+                ctx.lineTo(length,0)
+                ctx.stroke()
+                ctx.closePath()
+                ctx.restore()
+            }
+            function init() {
+                requestAnimationFrame(init)
+                drawBack(ctx)
+                drawAllHands(ctx)
+            }
+        }
+    </script>
+</head>
+<body>
+<canvas id="clock" width="400" height="400" ></canvas>
+</body>
+</html>
