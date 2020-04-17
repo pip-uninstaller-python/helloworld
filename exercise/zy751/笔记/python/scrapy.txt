@@ -1,20 +1,20 @@
-scrapy´¦Àí
-Ñ¡ÖĞÒ»¸öÄ¿Â¼	scrapy startproject name ´´½¨Ò»¸öÏîÄ¿
-		cd neme ÇĞ½øÈ¥
-		scrapy genspider spidername allowurl ´´½¨Ò»¸öÅÀ³æÖ¸¶¨ÔÊĞí·ÃÎÊµÄµØÖ·
-		Ò»°ã¶øÑÔ  ¼ÓÇëÇóÍ·£¬cookie£¬ip£¬Î¬³Ö»á»°ÔÚmiddlewareÖĞ¸ÄĞ´
+scrapyå¤„ç†
+é€‰ä¸­ä¸€ä¸ªç›®å½•	scrapy startproject name åˆ›å»ºä¸€ä¸ªé¡¹ç›®
+		cd neme åˆ‡è¿›å»
+		scrapy genspider spidername allowurl åˆ›å»ºä¸€ä¸ªçˆ¬è™«æŒ‡å®šå…è®¸è®¿é—®çš„åœ°å€
+		ä¸€èˆ¬è€Œè¨€  åŠ è¯·æ±‚å¤´ï¼Œcookieï¼Œipï¼Œç»´æŒä¼šè¯åœ¨middlewareä¸­æ”¹å†™
 from fake_useragent import UserAgent
 class UseragentMiddleware(object):
     def __init__(self):
         self.ua=UserAgent()
     def process_request(self, request, spider):
         request.headers['User-Agent']=self.ua.random
-	request.headers['Cookie']=¡®cookieÖµ¡¯       
+	request.headers['Cookie']=â€˜cookieå€¼â€™       
      #   ip=requests.get('http://127.0.0.1:5050/get')
       #  request.meta['proxy'] = 'http://'+'ip'
-      #  request.meta['proxy'] = 'http://'+'ip'ÕâÊÇÁ¬½Óip³Ø
+      #  request.meta['proxy'] = 'http://'+'ip'è¿™æ˜¯è¿æ¥ipæ± 
 	
-ÏÂÔØÆ÷ÖĞ¼ä¼şÀ´¸Ä±äÇëÇóÊ±µÄÇëÇóÍ· cookieºÍipÎÊÌâ
+ä¸‹è½½å™¨ä¸­é—´ä»¶æ¥æ”¹å˜è¯·æ±‚æ—¶çš„è¯·æ±‚å¤´ cookieå’Œipé—®é¢˜
 ```python
 class JSPageMiddleware(object):
     def __init__(self):
@@ -22,38 +22,38 @@ class JSPageMiddleware(object):
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
-        s = cls() # ÊµÀı»¯
+        s = cls() # å®ä¾‹åŒ–
         crawler.signals.connect(s.spider_closed, signal=signals.spider_closed)
         return s
     def process_request(self, request, spider):
         if spider.name == "quotes":
             self.browser.get(request.url)
             # time.sleep(3)
-            print("·ÃÎÊ:{0}".format(request.url))
-            #Ö±½Ó·µ»Ø¸øspider£¬¶ø·ÇÔÙ´«¸ødownloader
+            print("è®¿é—®:{0}".format(request.url))
+            #ç›´æ¥è¿”å›ç»™spiderï¼Œè€Œéå†ä¼ ç»™downloader
             return HtmlResponse(url=self.browser.current_url,
                                 body=self.browser.page_source,
                                 encoding="utf-8",
                                 request=request)
 
-    # ĞÅºÅ¼¤»î
+    # ä¿¡å·æ¿€æ´»
     def spider_closed(self, spider):
-        #µ±ÅÀ³æÍË³öµÄÊ±ºò¹Ø±Õchrome
+        #å½“çˆ¬è™«é€€å‡ºçš„æ—¶å€™å…³é—­chrome
         self.browser.quit()
-ÕâÊÇÊµÏÖscrapyÓëselenium¶Ô½ÓÎÊÌâ
+è¿™æ˜¯å®ç°scrapyä¸seleniumå¯¹æ¥é—®é¢˜
 
 
-ItemÎÊÌâ£¨item²»ĞèÒª¼¤»î£¬ÔÚÓÃµ½µÄÊ±ºòµ¼Èë ÊµÀı»¯Ò»ÏÂ£©
-class aaitem£¨scrapy.Item£©
+Itemé—®é¢˜ï¼ˆitemä¸éœ€è¦æ¿€æ´»ï¼Œåœ¨ç”¨åˆ°çš„æ—¶å€™å¯¼å…¥ å®ä¾‹åŒ–ä¸€ä¸‹ï¼‰
+class aaitemï¼ˆscrapy.Itemï¼‰
 	text=scrapy.Field()
 	author=scrapy.Filed()
-Ê¹ÓÃÊ±µ¼Èë°ü ÊµÀı»¯Ò»ÏÂ¾ÍĞĞ
+ä½¿ç”¨æ—¶å¯¼å…¥åŒ… å®ä¾‹åŒ–ä¸€ä¸‹å°±è¡Œ
 from items import aaitem
 
 
 
-±£´æµ½csvÖĞ
-class csvpipeline£¨object£©:
+ä¿å­˜åˆ°csvä¸­
+class csvpipelineï¼ˆobjectï¼‰:
 	def open_spider(self,spider):
 		self.file=open('aa,json','w')
 	def process_item(self,item,spider):
@@ -63,8 +63,8 @@ class csvpipeline£¨object£©:
 	def close_spider(self,spider)
 		self.file.close()
 
-±£´æµ½Redis
-class redispipeline£¨object£©:
+ä¿å­˜åˆ°Redis
+class redispipelineï¼ˆobjectï¼‰:
    def __init__(self):
       self.redis=redis.StrictRedis('localhost','port','fb','user','password','db')
     def process_item(self,item,spider):
@@ -73,13 +73,13 @@ class redispipeline£¨object£©:
    def close_spider(self,spider):
       self.redis.close() 
 
-±£´æµ½mysql
-class mysqlpipeline£¨object£©£º
+ä¿å­˜åˆ°mysql
+class mysqlpipelineï¼ˆobjectï¼‰ï¼š
   def __init__(self):
      self.connect=pymysql.connet(host,port,db,user,password,charset,use_unicode)
      self.cursor=self.connnect.cursor()
   def process_item(self,item,spider):
-     sql=¡®insert into tablename('a¡¯,'b','c') values(%s,%s,%s)',(item[a],item[b],item[c]
+     sql=â€˜insert into tablename('aâ€™,'b','c') values(%s,%s,%s)',(item[a],item[b],item[c]
      self.cursor.execute(sql)
      self.connect.commit()
      return item
@@ -91,12 +91,12 @@ class mysqlpipeline£¨object£©£º
 from scrapy.pipelines.images import ImagesPipeline
 class imagePipeline(ImagesPipeline):
     def get_media_requests(self, item, info):
-        #È¡³öÍ¼Æ¬µØÖ·
+        #å–å‡ºå›¾ç‰‡åœ°å€
         image_url=item['image']
-        #·¢³öÇëÇó
+        #å‘å‡ºè¯·æ±‚
         yield  scrapy.Request(image_url)
-×¨ÃÅ´¦Àí»ñµÃµÄÍ¼Æ¬µØÖ·£¬ÏÂÔØÍ¼Æ¬
-È»ºóÔÚsettingÖĞÉèÖÃIMAGES_STORE=¡®filepath¡¯  »áÔÚµ±Ç°Ä¿Â¼ÏÂ´´½¨Ò»¸öfullÎÄ¼ş¼Ğ±£´æÏÂÔØµÄÍ¼Æ¬
+ä¸“é—¨å¤„ç†è·å¾—çš„å›¾ç‰‡åœ°å€ï¼Œä¸‹è½½å›¾ç‰‡
+ç„¶ååœ¨settingä¸­è®¾ç½®IMAGES_STORE=â€˜filepathâ€™  ä¼šåœ¨å½“å‰ç›®å½•ä¸‹åˆ›å»ºä¸€ä¸ªfullæ–‡ä»¶å¤¹ä¿å­˜ä¸‹è½½çš„å›¾ç‰‡
 
 
 from fake_useragent import UserAgent
@@ -105,34 +105,34 @@ class UseragentMiddleware(object):
         self.ua=UserAgent()
     def process_request(self, request, spider):
         request.headers['User-Agent']=self.ua.random
-	request.headers['Cookie']=¡®cookieÖµ¡¯       
+	request.headers['Cookie']=â€˜cookieå€¼â€™       
      #   ip=requests.get('http://127.0.0.1:5050/get')
       #  request.meta['proxy'] = 'http://'+'ip'
-      #  request.meta['proxy'] = 'http://'+'ip'ÕâÊÇÁ¬½Óip³Ø
+      #  request.meta['proxy'] = 'http://'+'ip'è¿™æ˜¯è¿æ¥ipæ± 
 	
-ÏÂÔØÆ÷ÖĞ¼ä¼şÀ´¸Ä±äÇëÇóÊ±µÄÇëÇóÍ· cookieºÍipÎÊÌâ
+ä¸‹è½½å™¨ä¸­é—´ä»¶æ¥æ”¹å˜è¯·æ±‚æ—¶çš„è¯·æ±‚å¤´ cookieå’Œipé—®é¢˜
 
-¸ü¸ÄÉÏÃæÍê³ÉºóÒª¼ÇµÃÔÚsettingÖĞ¿ªÆô
+æ›´æ”¹ä¸Šé¢å®Œæˆåè¦è®°å¾—åœ¨settingä¸­å¼€å¯
 
-×¢ÒâºóÃæµÄÖµ
-Ò»°ãÅÀÈ¡ÏÈ½«robot¸ÄÎªFalse
-
-
-ÔÚ×Ô¼º´´½¨µÄÅÀ³æÄÚĞ´ÌáÈ¡ËùÒªÄÚÈİµÄ·½·¨
-¿ÉÓÃxpath£¬re ²»Ğèµ¼ÈëlxmlµÄetree
-parse ²»¿É¸ü¸Ä
-ÈçĞè½øÈëÏêÇéÒ³ÌáÈ¡»¹¿É¼ÌĞøyield scrapy.Request£¨url£¬callback£¬meta£©
-url	ÎªÒª½øÈëµÄÍøÖ·
-callback	ÎªÄã½øÈëÍøÖ·ºó±àĞ´ÌáÈ¡·½·¨µÄº¯Êı£¬ÊµÏÖ·­Ò³ÌáÈ¡£¬callback¾ÍÊÇ×ÔÉí
-meta	¿ÉÒÔ½øĞĞÊı¾İµÄ´«µİ  meta={¡®item¡¯:item,'id'=id}¾ÍÊÇÄãÏ£ÍûÔÚcallbackÖĞÓÃµ½µÄ±¾º¯ÊıÊı¾İ
+æ³¨æ„åé¢çš„å€¼
+ä¸€èˆ¬çˆ¬å–å…ˆå°†robotæ”¹ä¸ºFalse
 
 
+åœ¨è‡ªå·±åˆ›å»ºçš„çˆ¬è™«å†…å†™æå–æ‰€è¦å†…å®¹çš„æ–¹æ³•
+å¯ç”¨xpathï¼Œre ä¸éœ€å¯¼å…¥lxmlçš„etree
+parse ä¸å¯æ›´æ”¹
+å¦‚éœ€è¿›å…¥è¯¦æƒ…é¡µæå–è¿˜å¯ç»§ç»­yield scrapy.Requestï¼ˆurlï¼Œcallbackï¼Œmetaï¼‰
+url	ä¸ºè¦è¿›å…¥çš„ç½‘å€
+callback	ä¸ºä½ è¿›å…¥ç½‘å€åç¼–å†™æå–æ–¹æ³•çš„å‡½æ•°ï¼Œå®ç°ç¿»é¡µæå–ï¼Œcallbackå°±æ˜¯è‡ªèº«
+meta	å¯ä»¥è¿›è¡Œæ•°æ®çš„ä¼ é€’  meta={â€˜itemâ€™:item,'id'=id}å°±æ˜¯ä½ å¸Œæœ›åœ¨callbackä¸­ç”¨åˆ°çš„æœ¬å‡½æ•°æ•°æ®
 
-±àĞ´Íê±Ïºó
-Á©ÖÖ·½Ê½ÔËĞĞÅÀ³æ
-Ò»ÖÖÊÇÔÚcmdÖĞÇĞµ½ÅÀ³æÎÄ¼ş¼ĞÎ»ÖÃ  scrapy crawl ÅÀ³æÃû£¨-o ÎÄ¼şÃû.ÎÄ¼ş¸ñÊ½£©
-ÁíÒ»ÖÖÊµÔÚÓëÅÀ³æÍ¬Ò»ÎÄ¼ş¼ĞÏÂµÄ__init__ÖĞfrom scrapy import cmdline
-	cmdline.execute('scrapy crawl ÅÀ³æÃû£¨-o ÎÄ¼şÃû.ÎÄ¼ş¸ñÊ½£©'.split())
+
+
+ç¼–å†™å®Œæ¯•å
+ä¿©ç§æ–¹å¼è¿è¡Œçˆ¬è™«
+ä¸€ç§æ˜¯åœ¨cmdä¸­åˆ‡åˆ°çˆ¬è™«æ–‡ä»¶å¤¹ä½ç½®  scrapy crawl çˆ¬è™«åï¼ˆ-o æ–‡ä»¶å.æ–‡ä»¶æ ¼å¼ï¼‰
+å¦ä¸€ç§å®åœ¨ä¸çˆ¬è™«åŒä¸€æ–‡ä»¶å¤¹ä¸‹çš„__init__ä¸­from scrapy import cmdline
+	cmdline.execute('scrapy crawl çˆ¬è™«åï¼ˆ-o æ–‡ä»¶å.æ–‡ä»¶æ ¼å¼ï¼‰'.split())
 
 
 
