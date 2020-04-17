@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>funny</title>
+    <meta name="keywords" content="give you some color see see">
+    <meta name="description" content="yeah">
+    <style>
+        p{
+         cursor: pointer;
+        }
+        body{
+            margin: 0;
+            /*background-image: url("link2.jpg");*/
+            /*background-repeat: no-repeat;*/
+            /*background-size: 100%;*/
+        }
+        .content{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 1100px;
+            height: 750px;
+        }
+        .content ul{
+            list-style: none;
+            padding: 100px 0px 0px 0px;
+        }
+        .content li{
+            position: relative;
+            float: left;
+            width: 180px;
+            height: 105px;
+            background-color: rgba(0,0,0,0.5);
+            margin: 50px 15px;
+        }
+        .content li:before,.content li:after{
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: '';
+            width: 180px;
+            height: 105px;
+            background-color: rgba(0,0,0,0.5);
+
+        }
+        .content li:before{
+            transform: rotate(60deg);
+        }
+        .content li:after{
+            transform: rotate(-60deg);
+        }
+        .content img{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            z-index: 1;
+            transition: 1s;
+        }
+        .content img:hover{
+            transform: rotate(360deg) scale(1.3);
+        }
+        .content p{
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            margin: 0;
+            transform: translate(-50%,0);
+            z-index: 1;
+            color: red;
+        }
+    </style>
+    <script>
+        window.onload=function () {
+            let canvas=document.getElementById('snow');
+            let context=canvas.getContext('2d');
+            let snows=[];
+            let back_img=new Image()
+            back_img.src='https://s2.ax1x.com/2019/05/25/VAY1nf.jpg'
+            class Snow{
+                constructor(x,radius,speed,color){
+                    this.x=x;
+                    this.y=0;
+                    this.radius=radius;
+                    this.speed=speed;
+                    this.color=color
+                }
+                draw(context){
+                    context.save();
+                    context.translate(this.x,this.y);
+                    context.fillStyle=this.color
+                    context.beginPath()
+                    context.arc(0,0,this.radius,0,2*Math.PI,true)
+                    context.closePath()
+                    context.fill()
+                    context.restore()
+                }
+            }
+            function createSnow() {
+                if(snows.length<1000){
+                    let x=Math.random()*canvas.width+1
+                    let radius=Math.random()*3+1
+                    let speed=Math.random()*3+1
+                    let color='white'
+                    let snow=new Snow(x,radius,speed,color)
+                    snows.push(snow)
+                }
+            }
+            function snowMove(snow,index) {
+                snow.y+=snow.speed
+                if(snow.y>canvas.height){
+                    snows.splice(index,1)
+                }else{
+                    snow.draw(context)
+                }
+            }
+            (function init() {
+                requestAnimationFrame(init)
+                context.clearRect(0,0,canvas.width,canvas.height)
+                context.drawImage(back_img,0,0,canvas.width,canvas.height)
+                createSnow()
+                snows.forEach(snowMove)
+            })()
+
+        }
+    </script>
+</head>
+<body>
+    <canvas id="snow" style="width: 100%;height: 100%;">
+    </canvas>
+    <div class="content">
+        <ul>
+            <li><a href="https://123.sogou.com/?211103"><img src="link.png" style="width: 80px;height: 80px"></a><p>app</p></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li style="margin-left: 120px"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</body>
+</html>
